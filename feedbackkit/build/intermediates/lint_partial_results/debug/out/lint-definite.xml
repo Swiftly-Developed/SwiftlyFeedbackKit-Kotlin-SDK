@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.2.2" type="incidents">
+
+    <incident
+        id="ModifierParameter"
+        severity="warning"
+        message="Modifier parameter should be the first optional parameter">
+        <location
+            file="${:feedbackkit*debug*MAIN*sourceProvider*0*javaDir*2}/com/swiftlydeveloped/feedbackkit/ui/VoteButton.kt"
+            line="139"
+            column="5"
+            startOffset="4798"
+            endLine="139"
+            endColumn="13"
+            endOffset="4806"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.core:core-ktx than 1.12.0 is available: 1.17.0">
+        <fix-replace
+            description="Change to 1.17.0"
+            family="Update versions"
+            oldString="1.12.0"
+            replacement="1.17.0"/>
+        <location
+            file="${:feedbackkit*projectDir}/build.gradle.kts"
+            line="54"
+            column="21"
+            startOffset="1242"
+            endLine="54"
+            endColumn="50"
+            endOffset="1271"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.7.0 is available: 2.10.0">
+        <fix-replace
+            description="Change to 2.10.0"
+            family="Update versions"
+            oldString="2.7.0"
+            replacement="2.10.0"/>
+        <location
+            file="${:feedbackkit*projectDir}/build.gradle.kts"
+            line="55"
+            column="21"
+            startOffset="1294"
+            endLine="55"
+            endColumn="67"
+            endOffset="1340"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.7.0 is available: 2.10.0">
+        <fix-replace
+            description="Change to 2.10.0"
+            family="Update versions"
+            oldString="2.7.0"
+            replacement="2.10.0"/>
+        <location
+            file="${:feedbackkit*projectDir}/build.gradle.kts"
+            line="56"
+            column="21"
+            startOffset="1363"
+            endLine="56"
+            endColumn="73"
+            endOffset="1415"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.activity:activity-compose than 1.8.2 is available: 1.12.3">
+        <fix-replace
+            description="Change to 1.12.3"
+            family="Update versions"
+            oldString="1.8.2"
+            replacement="1.12.3"/>
+        <location
+            file="${:feedbackkit*projectDir}/build.gradle.kts"
+            line="65"
+            column="21"
+            startOffset="1817"
+            endLine="65"
+            endColumn="61"
+            endOffset="1857"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.datastore:datastore-preferences than 1.0.0 is available: 1.2.0">
+        <fix-replace
+            description="Change to 1.2.0"
+            family="Update versions"
+            oldString="1.0.0"
+            replacement="1.2.0"/>
+        <location
+            file="${:feedbackkit*projectDir}/build.gradle.kts"
+            line="68"
+            column="21"
+            startOffset="1896"
+            endLine="68"
+            endColumn="67"
+            endOffset="1942"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.test.ext:junit than 1.1.5 is available: 1.3.0">
+        <fix-replace
+            description="Change to 1.3.0"
+            family="Update versions"
+            oldString="1.1.5"
+            replacement="1.3.0"/>
+        <location
+            file="${:feedbackkit*projectDir}/build.gradle.kts"
+            line="74"
+            column="32"
+            startOffset="2163"
+            endLine="74"
+            endColumn="61"
+            endOffset="2192"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.test.espresso:espresso-core than 3.5.1 is available: 3.7.0">
+        <fix-replace
+            description="Change to 3.7.0"
+            family="Update versions"
+            oldString="3.5.1"
+            replacement="3.7.0"/>
+        <location
+            file="${:feedbackkit*projectDir}/build.gradle.kts"
+            line="75"
+            column="32"
+            startOffset="2226"
+            endLine="75"
+            endColumn="74"
+            endOffset="2268"/>
+    </incident>
+
+</incidents>

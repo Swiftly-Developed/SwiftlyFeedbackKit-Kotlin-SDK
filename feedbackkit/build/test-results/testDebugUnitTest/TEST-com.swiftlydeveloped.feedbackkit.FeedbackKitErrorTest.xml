@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.swiftlydeveloped.feedbackkit.FeedbackKitErrorTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-02-08T15:00:30" hostname="Bens-MacBook-Pro.local" time="0.003">
+  <properties/>
+  <testcase name="status codes are correct" classname="com.swiftlydeveloped.feedbackkit.FeedbackKitErrorTest" time="0.002"/>
+  <testcase name="error codes are correct" classname="com.swiftlydeveloped.feedbackkit.FeedbackKitErrorTest" time="0.0"/>
+  <testcase name="fromException creates NetworkError for timeout" classname="com.swiftlydeveloped.feedbackkit.FeedbackKitErrorTest" time="0.0"/>
+  <testcase name="fromException creates NetworkError for unknown host" classname="com.swiftlydeveloped.feedbackkit.FeedbackKitErrorTest" time="0.001"/>
+  <testcase name="fromException creates UnknownError for other exceptions" classname="com.swiftlydeveloped.feedbackkit.FeedbackKitErrorTest" time="0.0"/>
+  <testcase name="fromStatusCode creates correct error types" classname="com.swiftlydeveloped.feedbackkit.FeedbackKitErrorTest" time="0.0"/>
+  <testcase name="isRecoverable is correct" classname="com.swiftlydeveloped.feedbackkit.FeedbackKitErrorTest" time="0.0"/>
+  <testcase name="fromException returns same error if already FeedbackKitError" classname="com.swiftlydeveloped.feedbackkit.FeedbackKitErrorTest" time="0.0"/>
+  <testcase name="userMessage returns user-friendly messages" classname="com.swiftlydeveloped.feedbackkit.FeedbackKitErrorTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
