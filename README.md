@@ -98,7 +98,6 @@ FeedbackKit.configure(context) {
     apiKey = "your-api-key"           // Required: Your API key
     userId = "user-123"               // Optional: User ID for voting
     environment = Environment.PRODUCTION  // Or STAGING, LOCAL
-    baseUrl = "https://custom.api.com"   // Optional: Custom base URL
     timeout = 30_000L                 // Optional: Request timeout in ms
     debug = false                     // Optional: Enable debug logging
 }
