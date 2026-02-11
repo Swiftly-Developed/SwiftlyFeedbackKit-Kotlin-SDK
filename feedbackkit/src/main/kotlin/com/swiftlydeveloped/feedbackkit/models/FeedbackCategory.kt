@@ -1,5 +1,7 @@
 package com.swiftlydeveloped.feedbackkit.models
 
+import androidx.annotation.StringRes
+import com.swiftlydeveloped.feedbackkit.R
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -21,7 +23,19 @@ enum class FeedbackCategory {
     OTHER;
 
     /**
-     * Human-readable display name for the category.
+     * String resource ID for the localized display name.
+     */
+    @get:StringRes
+    val displayNameRes: Int
+        get() = when (this) {
+            FEATURE_REQUEST -> R.string.feedbackkit_category_feature_request
+            BUG_REPORT -> R.string.feedbackkit_category_bug_report
+            IMPROVEMENT -> R.string.feedbackkit_category_improvement
+            OTHER -> R.string.feedbackkit_category_other
+        }
+
+    /**
+     * Human-readable display name for the category (English fallback).
      */
     val displayName: String
         get() = when (this) {

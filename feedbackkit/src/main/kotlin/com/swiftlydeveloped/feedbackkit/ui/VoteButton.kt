@@ -19,10 +19,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.swiftlydeveloped.feedbackkit.FeedbackKit
+import com.swiftlydeveloped.feedbackkit.R
 import com.swiftlydeveloped.feedbackkit.models.Feedback
 import com.swiftlydeveloped.feedbackkit.models.VoteResponse
 import com.swiftlydeveloped.feedbackkit.state.LocalFeedbackKitTheme
@@ -113,7 +115,7 @@ fun VoteButton(
         ) {
             Icon(
                 imageVector = Icons.Default.KeyboardArrowUp,
-                contentDescription = if (localHasVoted) "Remove vote" else "Vote",
+                contentDescription = stringResource(if (localHasVoted) R.string.feedbackkit_remove_vote else R.string.feedbackkit_vote),
                 tint = contentColor,
                 modifier = Modifier.size(24.dp)
             )
@@ -207,7 +209,7 @@ fun VoteButton(
         ) {
             Icon(
                 imageVector = Icons.Default.KeyboardArrowUp,
-                contentDescription = if (localHasVoted) "Remove vote" else "Vote",
+                contentDescription = stringResource(if (localHasVoted) R.string.feedbackkit_remove_vote else R.string.feedbackkit_vote),
                 tint = contentColor,
                 modifier = Modifier.size(24.dp)
             )

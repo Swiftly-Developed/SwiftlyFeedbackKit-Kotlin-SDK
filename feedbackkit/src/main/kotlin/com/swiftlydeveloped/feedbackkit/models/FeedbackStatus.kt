@@ -1,5 +1,7 @@
 package com.swiftlydeveloped.feedbackkit.models
 
+import androidx.annotation.StringRes
+import com.swiftlydeveloped.feedbackkit.R
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -34,7 +36,21 @@ enum class FeedbackStatus {
         get() = this != COMPLETED && this != REJECTED
 
     /**
-     * Human-readable display name for the status.
+     * String resource ID for the localized display name.
+     */
+    @get:StringRes
+    val displayNameRes: Int
+        get() = when (this) {
+            PENDING -> R.string.feedbackkit_status_pending
+            APPROVED -> R.string.feedbackkit_status_approved
+            IN_PROGRESS -> R.string.feedbackkit_status_in_progress
+            TESTFLIGHT -> R.string.feedbackkit_status_testflight
+            COMPLETED -> R.string.feedbackkit_status_completed
+            REJECTED -> R.string.feedbackkit_status_rejected
+        }
+
+    /**
+     * Human-readable display name for the status (English fallback).
      */
     val displayName: String
         get() = when (this) {

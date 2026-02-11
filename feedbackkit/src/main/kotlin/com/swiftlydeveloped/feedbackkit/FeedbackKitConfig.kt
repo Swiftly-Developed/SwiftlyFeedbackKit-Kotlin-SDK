@@ -79,12 +79,12 @@ enum class Environment(val baseUrl: String) {
     /**
      * Production environment.
      */
-    PRODUCTION("https://api.swiftlyfeedback.com"),
+    PRODUCTION("https://feedbackkit.swiftly-workspace.com"),
 
     /**
      * Staging environment.
      */
-    STAGING("https://staging.swiftlyfeedback.com"),
+    STAGING("https://api.feedbackkit.testflight.swiftly-developed.com"),
 
     /**
      * Local development (Android emulator localhost).

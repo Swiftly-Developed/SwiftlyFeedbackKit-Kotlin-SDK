@@ -19,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.swiftlydeveloped.feedbackkit.R
 import com.swiftlydeveloped.feedbackkit.models.Feedback
 import com.swiftlydeveloped.feedbackkit.models.FeedbackCategory
 import com.swiftlydeveloped.feedbackkit.models.FeedbackStatus
@@ -116,7 +118,7 @@ fun FeedbackCard(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.ChatBubbleOutline,
-                        contentDescription = "Comments",
+                        contentDescription = stringResource(R.string.feedbackkit_comments_icon),
                         tint = theme.secondaryTextColor,
                         modifier = Modifier.height(16.dp)
                     )

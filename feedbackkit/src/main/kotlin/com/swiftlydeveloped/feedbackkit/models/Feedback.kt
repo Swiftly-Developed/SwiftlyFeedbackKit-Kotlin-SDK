@@ -62,7 +62,9 @@ data class CreateFeedbackRequest(
     val category: FeedbackCategory,
     val email: String? = null,
     @SerialName("user_id")
-    val userId: String? = null
+    val userId: String? = null,
+    val subscribeToMailingList: Boolean? = null,
+    val mailingListEmailTypes: List<String>? = null
 )
 
 /**

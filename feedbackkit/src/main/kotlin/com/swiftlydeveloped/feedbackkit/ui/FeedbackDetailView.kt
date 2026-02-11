@@ -36,11 +36,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.swiftlydeveloped.feedbackkit.FeedbackKit
+import com.swiftlydeveloped.feedbackkit.R
 import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
 import com.swiftlydeveloped.feedbackkit.models.Comment
 import com.swiftlydeveloped.feedbackkit.models.Feedback
@@ -116,7 +118,7 @@ fun FeedbackDetailView(
             // Comments section header
             item {
                 Text(
-                    text = "Comments (${feedback.commentCount})",
+                    text = stringResource(R.string.feedbackkit_detail_comments, feedback.commentCount),
                     color = theme.textColor,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold
@@ -139,7 +141,7 @@ fun FeedbackDetailView(
                 commentsError != null -> {
                     item {
                         Text(
-                            text = "Failed to load comments",
+                            text = stringResource(R.string.feedbackkit_detail_comments_error),
                             color = theme.errorColor,
                             fontSize = 14.sp
                         )
@@ -149,7 +151,7 @@ fun FeedbackDetailView(
                 comments.isEmpty() -> {
                     item {
                         Text(
-                            text = "No comments yet. Be the first to comment!",
+                            text = stringResource(R.string.feedbackkit_detail_comments_empty),
                             color = theme.secondaryTextColor,
                             fontSize = 14.sp
                         )
@@ -170,13 +172,13 @@ fun FeedbackDetailView(
             modifier = modifier,
             topBar = {
                 TopAppBar(
-                    title = { Text("Feedback Details") },
+                    title = { Text(stringResource(R.string.feedbackkit_detail_title)) },
                     navigationIcon = {
                         if (onBack != null) {
                             IconButton(onClick = onBack) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Back"
+                                    contentDescription = stringResource(R.string.feedbackkit_back)
                                 )
                             }
                         }
@@ -280,7 +282,7 @@ private fun CommentCard(
                 )
                 Spacer(modifier = Modifier.width(theme.spacing.dp))
                 Text(
-                    text = comment.userName ?: "Anonymous",
+                    text = comment.userName ?: stringResource(R.string.feedbackkit_anonymous),
                     color = theme.textColor,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium
@@ -288,7 +290,7 @@ private fun CommentCard(
                 if (comment.isOfficial) {
                     Spacer(modifier = Modifier.width(theme.spacing.dp))
                     Text(
-                        text = "Official",
+                        text = stringResource(R.string.feedbackkit_detail_comment_official),
                         color = theme.primaryColor,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold

@@ -1,5 +1,6 @@
 package com.swiftlydeveloped.feedbackkit.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,12 +38,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.swiftlydeveloped.feedbackkit.FeedbackKit
+import com.swiftlydeveloped.feedbackkit.R
 import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
 import com.swiftlydeveloped.feedbackkit.errors.userMessage
 import com.swiftlydeveloped.feedbackkit.models.CreateFeedbackRequest
@@ -72,6 +78,9 @@ fun SubmitFeedbackView(
     var description by remember { mutableStateOf("") }
     var category by remember { mutableStateOf(FeedbackCategory.FEATURE_REQUEST) }
     var email by remember { mutableStateOf("") }
+    var subscribeToMailingList by remember { mutableStateOf(false) }
+    var operationalEmails by remember { mutableStateOf(true) }
+    var marketingEmails by remember { mutableStateOf(true) }
 
     var isSubmitting by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<FeedbackKitError?>(null) }
@@ -101,11 +110,21 @@ fun SubmitFeedbackView(
             error = null
 
             try {
+                val trimmedEmail = email.takeIf { it.isNotBlank() }?.trim()
+                val emailTypes = if (trimmedEmail != null && subscribeToMailingList) {
+                    buildList {
+                        if (operationalEmails) add("operational")
+                        if (marketingEmails) add("marketing")
+                    }.ifEmpty { null }
+                } else null
+
                 val request = CreateFeedbackRequest(
                     title = title.trim(),
                     description = description.trim(),
                     category = category,
-                    email = email.takeIf { it.isNotBlank() }?.trim()
+                    email = trimmedEmail,
+                    subscribeToMailingList = if (trimmedEmail != null) subscribeToMailingList else null,
+                    mailingListEmailTypes = emailTypes
                 )
 
                 val feedback = FeedbackKit.shared.feedback.create(request)
@@ -130,8 +149,8 @@ fun SubmitFeedbackView(
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Title") },
-                placeholder = { Text("Brief summary of your feedback") },
+                label = { Text(stringResource(R.string.feedbackkit_form_title)) },
+                placeholder = { Text(stringResource(R.string.feedbackkit_form_title_placeholder)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 colors = textFieldColors,
@@ -145,10 +164,10 @@ fun SubmitFeedbackView(
                 onExpandedChange = { if (!isSubmitting) categoryExpanded = it }
             ) {
                 OutlinedTextField(
-                    value = category.displayName,
+                    value = stringResource(category.displayNameRes),
                     onValueChange = {},
                     readOnly = true,
-                    label = { Text("Category") },
+                    label = { Text(stringResource(R.string.feedbackkit_form_category)) },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded)
                     },
@@ -171,7 +190,7 @@ fun SubmitFeedbackView(
                                     horizontalArrangement = Arrangement.spacedBy(theme.spacing.dp)
                                 ) {
                                     CategoryBadge(category = cat, theme = theme)
-                                    Text(cat.displayName)
+                                    Text(stringResource(cat.displayNameRes))
                                 }
                             },
                             onClick = {
@@ -187,8 +206,8 @@ fun SubmitFeedbackView(
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
-                label = { Text("Description") },
-                placeholder = { Text("Provide details about your feedback...") },
+                label = { Text(stringResource(R.string.feedbackkit_form_description)) },
+                placeholder = { Text(stringResource(R.string.feedbackkit_form_description_placeholder)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(160.dp),
@@ -201,14 +220,96 @@ fun SubmitFeedbackView(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email (optional)") },
-                placeholder = { Text("Get notified about updates") },
+                label = { Text(stringResource(R.string.feedbackkit_form_email)) },
+                placeholder = { Text(stringResource(R.string.feedbackkit_form_email_placeholder)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 colors = textFieldColors,
                 shape = RoundedCornerShape(theme.borderRadius.dp),
                 enabled = !isSubmitting
             )
+
+            // Mailing list opt-in (visible only when email is non-empty)
+            if (email.isNotBlank()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(enabled = !isSubmitting) {
+                            subscribeToMailingList = !subscribeToMailingList
+                        },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = subscribeToMailingList,
+                        onCheckedChange = { subscribeToMailingList = it },
+                        enabled = !isSubmitting,
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = theme.primaryColor,
+                            uncheckedColor = theme.secondaryTextColor,
+                            checkmarkColor = theme.backgroundColor
+                        )
+                    )
+                    Text(
+                        text = stringResource(R.string.feedbackkit_form_mailing_list),
+                        color = theme.textColor,
+                        fontSize = 14.sp
+                    )
+                }
+
+                // Email type sub-checkboxes (progressive disclosure)
+                if (subscribeToMailingList) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp)
+                            .clickable(enabled = !isSubmitting) {
+                                operationalEmails = !operationalEmails
+                            },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = operationalEmails,
+                            onCheckedChange = { operationalEmails = it },
+                            enabled = !isSubmitting,
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = theme.primaryColor,
+                                uncheckedColor = theme.secondaryTextColor,
+                                checkmarkColor = theme.backgroundColor
+                            )
+                        )
+                        Text(
+                            text = stringResource(R.string.feedbackkit_form_mailing_list_operational),
+                            color = theme.secondaryTextColor,
+                            fontSize = 13.sp
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp)
+                            .clickable(enabled = !isSubmitting) {
+                                marketingEmails = !marketingEmails
+                            },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = marketingEmails,
+                            onCheckedChange = { marketingEmails = it },
+                            enabled = !isSubmitting,
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = theme.primaryColor,
+                                uncheckedColor = theme.secondaryTextColor,
+                                checkmarkColor = theme.backgroundColor
+                            )
+                        )
+                        Text(
+                            text = stringResource(R.string.feedbackkit_form_mailing_list_marketing),
+                            color = theme.secondaryTextColor,
+                            fontSize = 13.sp
+                        )
+                    }
+                }
+            }
 
             // Error message
             error?.let {
@@ -238,7 +339,7 @@ fun SubmitFeedbackView(
                     )
                 } else {
                     Text(
-                        text = "Submit Feedback",
+                        text = stringResource(R.string.feedbackkit_submit_button),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.padding(vertical = theme.spacing.dp)
@@ -253,13 +354,13 @@ fun SubmitFeedbackView(
             modifier = modifier,
             topBar = {
                 TopAppBar(
-                    title = { Text("Submit Feedback") },
+                    title = { Text(stringResource(R.string.feedbackkit_submit_title)) },
                     navigationIcon = {
                         if (onBack != null) {
                             IconButton(onClick = onBack) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Back"
+                                    contentDescription = stringResource(R.string.feedbackkit_back)
                                 )
                             }
                         }

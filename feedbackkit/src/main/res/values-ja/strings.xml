@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedbackkit_list_title">フィードバック</string>
+    <string name="feedbackkit_list_empty">フィードバックはまだありません</string>
+    <string name="feedbackkit_list_empty_description">最初にフィードバックを送信しましょう！</string>
+    <string name="feedbackkit_list_error">問題が発生しました</string>
+    <string name="feedbackkit_list_retry">再試行</string>
+    <string name="feedbackkit_submit_title">フィードバックを送信</string>
+    <string name="feedbackkit_submit_button">フィードバックを送信</string>
+    <string name="feedbackkit_detail_title">フィードバック詳細</string>
+    <string name="feedbackkit_detail_comments">コメント (%1$d)</string>
+    <string name="feedbackkit_detail_comments_empty">コメントはまだありません。最初にコメントしましょう！</string>
+    <string name="feedbackkit_detail_comments_error">コメントの読み込みに失敗しました</string>
+    <string name="feedbackkit_detail_comment_official">公式</string>
+    <string name="feedbackkit_anonymous">匿名</string>
+    <string name="feedbackkit_form_title">タイトル</string>
+    <string name="feedbackkit_form_title_placeholder">フィードバックの概要</string>
+    <string name="feedbackkit_form_description">説明</string>
+    <string name="feedbackkit_form_description_placeholder">フィードバックの詳細を入力してください…</string>
+    <string name="feedbackkit_form_category">カテゴリ</string>
+    <string name="feedbackkit_form_email">メール（任意）</string>
+    <string name="feedbackkit_form_email_placeholder">更新があった場合に通知を受け取る</string>
+    <string name="feedbackkit_form_mailing_list">メールニュースレターで最新情報を受け取る</string>
+    <string name="feedbackkit_form_mailing_list_operational">運用メール（ステータス更新、アカウント）</string>
+    <string name="feedbackkit_form_mailing_list_marketing">マーケティングメール（ニュースレター、プロモーション）</string>
+    <string name="feedbackkit_back">戻る</string>
+    <string name="feedbackkit_comments_icon">コメント</string>
+    <string name="feedbackkit_vote">投票</string>
+    <string name="feedbackkit_remove_vote">投票を取り消す</string>
+    <string name="feedbackkit_status_pending">保留中</string>
+    <string name="feedbackkit_status_approved">承認済み</string>
+    <string name="feedbackkit_status_in_progress">進行中</string>
+    <string name="feedbackkit_status_testflight">TestFlight</string>
+    <string name="feedbackkit_status_completed">完了</string>
+    <string name="feedbackkit_status_rejected">却下</string>
+    <string name="feedbackkit_category_feature_request">機能リクエスト</string>
+    <string name="feedbackkit_category_bug_report">バグ報告</string>
+    <string name="feedbackkit_category_improvement">改善</string>
+    <string name="feedbackkit_category_other">その他</string>
+    <string name="feedbackkit_error_title">エラー</string>
+    <string name="feedbackkit_error_generic">エラーが発生しました</string>
+</resources>

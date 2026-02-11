@@ -24,8 +24,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.swiftlydeveloped.feedbackkit.R
 import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
 import com.swiftlydeveloped.feedbackkit.errors.userMessage
 import com.swiftlydeveloped.feedbackkit.models.Feedback
@@ -160,13 +162,13 @@ private fun DefaultEmptyContent(theme: FeedbackKitTheme) {
             )
             Spacer(modifier = Modifier.height(theme.spacing.dp * 2))
             Text(
-                text = "No feedback yet",
+                text = stringResource(R.string.feedbackkit_list_empty),
                 color = theme.textColor,
                 fontSize = 18.sp
             )
             Spacer(modifier = Modifier.height(theme.spacing.dp))
             Text(
-                text = "Be the first to submit feedback!",
+                text = stringResource(R.string.feedbackkit_list_empty_description),
                 color = theme.secondaryTextColor,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center
@@ -197,7 +199,7 @@ private fun DefaultErrorContent(
             )
             Spacer(modifier = Modifier.height(theme.spacing.dp * 2))
             Text(
-                text = "Something went wrong",
+                text = stringResource(R.string.feedbackkit_list_error),
                 color = theme.textColor,
                 fontSize = 18.sp
             )
@@ -210,7 +212,7 @@ private fun DefaultErrorContent(
             )
             Spacer(modifier = Modifier.height(theme.spacing.dp * 2))
             Button(onClick = onRetry) {
-                Text("Retry")
+                Text(stringResource(R.string.feedbackkit_list_retry))
             }
         }
     }

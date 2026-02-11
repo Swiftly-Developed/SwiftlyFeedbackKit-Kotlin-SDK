@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedbackkit_list_title">피드백</string>
+    <string name="feedbackkit_list_empty">아직 피드백이 없습니다</string>
+    <string name="feedbackkit_list_empty_description">첫 번째로 피드백을 제출해 보세요!</string>
+    <string name="feedbackkit_list_error">문제가 발생했습니다</string>
+    <string name="feedbackkit_list_retry">다시 시도</string>
+    <string name="feedbackkit_submit_title">피드백 제출</string>
+    <string name="feedbackkit_submit_button">피드백 제출</string>
+    <string name="feedbackkit_detail_title">피드백 상세</string>
+    <string name="feedbackkit_detail_comments">댓글 (%1$d)</string>
+    <string name="feedbackkit_detail_comments_empty">아직 댓글이 없습니다. 첫 번째로 댓글을 남겨보세요!</string>
+    <string name="feedbackkit_detail_comments_error">댓글 로딩 실패</string>
+    <string name="feedbackkit_detail_comment_official">공식</string>
+    <string name="feedbackkit_anonymous">익명</string>
+    <string name="feedbackkit_form_title">제목</string>
+    <string name="feedbackkit_form_title_placeholder">피드백 요약</string>
+    <string name="feedbackkit_form_description">설명</string>
+    <string name="feedbackkit_form_description_placeholder">피드백에 대한 자세한 내용을 입력하세요…</string>
+    <string name="feedbackkit_form_category">카테고리</string>
+    <string name="feedbackkit_form_email">이메일 (선택사항)</string>
+    <string name="feedbackkit_form_email_placeholder">업데이트 시 알림 받기</string>
+    <string name="feedbackkit_form_mailing_list">이메일 뉴스레터로 최신 소식 받기</string>
+    <string name="feedbackkit_form_mailing_list_operational">운영 이메일 (상태 업데이트, 계정)</string>
+    <string name="feedbackkit_form_mailing_list_marketing">마케팅 이메일 (뉴스레터, 프로모션)</string>
+    <string name="feedbackkit_back">뒤로</string>
+    <string name="feedbackkit_comments_icon">댓글</string>
+    <string name="feedbackkit_vote">투표</string>
+    <string name="feedbackkit_remove_vote">투표 취소</string>
+    <string name="feedbackkit_status_pending">대기 중</string>
+    <string name="feedbackkit_status_approved">승인됨</string>
+    <string name="feedbackkit_status_in_progress">진행 중</string>
+    <string name="feedbackkit_status_testflight">TestFlight</string>
+    <string name="feedbackkit_status_completed">완료됨</string>
+    <string name="feedbackkit_status_rejected">거부됨</string>
+    <string name="feedbackkit_category_feature_request">기능 요청</string>
+    <string name="feedbackkit_category_bug_report">버그 신고</string>
+    <string name="feedbackkit_category_improvement">개선</string>
+    <string name="feedbackkit_category_other">기타</string>
+    <string name="feedbackkit_error_title">오류</string>
+    <string name="feedbackkit_error_generic">오류가 발생했습니다</string>
+</resources>

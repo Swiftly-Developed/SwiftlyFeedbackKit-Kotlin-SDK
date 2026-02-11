@@ -23,14 +23,18 @@ class VotesApi internal constructor(
      */
     suspend fun vote(
         feedbackId: String,
-        notifyOnStatusChange: Boolean = false
+        notifyOnStatusChange: Boolean = false,
+        subscribeToMailingList: Boolean? = null,
+        mailingListEmailTypes: List<String>? = null
     ): VoteResponse {
         val userId = http.userId
             ?: throw FeedbackKitError.ValidationError("User ID is required for voting")
 
         val request = VoteRequest(
             userId = userId,
-            notifyOnStatusChange = notifyOnStatusChange
+            notifyOnStatusChange = notifyOnStatusChange,
+            subscribeToMailingList = subscribeToMailingList,
+            mailingListEmailTypes = mailingListEmailTypes
         )
 
         val body = http.jsonSerializer.encodeToString(request)
@@ -74,18 +78,22 @@ class VotesApi internal constructor(
     suspend fun toggleVote(
         feedbackId: String,
         hasVoted: Boolean,
-        notifyOnStatusChange: Boolean = false
+        notifyOnStatusChange: Boolean = false,
+        subscribeToMailingList: Boolean? = null,
+        mailingListEmailTypes: List<String>? = null
     ): VoteResponse {
         return if (hasVoted) {
             unvote(feedbackId)
         } else {
-            vote(feedbackId, notifyOnStatusChange)
+            vote(feedbackId, notifyOnStatusChange, subscribeToMailingList, mailingListEmailTypes)
         }
     }
 
     @Serializable
     private data class VoteRequest(
         val userId: String,
-        val notifyOnStatusChange: Boolean = false
+        val notifyOnStatusChange: Boolean = false,
+        val subscribeToMailingList: Boolean? = null,
+        val mailingListEmailTypes: List<String>? = null
     )
 }

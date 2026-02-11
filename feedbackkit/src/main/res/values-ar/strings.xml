@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedbackkit_list_title">الملاحظات</string>
+    <string name="feedbackkit_list_empty">لا توجد ملاحظات بعد</string>
+    <string name="feedbackkit_list_empty_description">كن أول من يرسل ملاحظة!</string>
+    <string name="feedbackkit_list_error">حدث خطأ ما</string>
+    <string name="feedbackkit_list_retry">إعادة المحاولة</string>
+    <string name="feedbackkit_submit_title">إرسال ملاحظة</string>
+    <string name="feedbackkit_submit_button">إرسال ملاحظة</string>
+    <string name="feedbackkit_detail_title">تفاصيل الملاحظة</string>
+    <string name="feedbackkit_detail_comments">التعليقات (%1$d)</string>
+    <string name="feedbackkit_detail_comments_empty">لا توجد تعليقات بعد. كن أول من يعلق!</string>
+    <string name="feedbackkit_detail_comments_error">فشل تحميل التعليقات</string>
+    <string name="feedbackkit_detail_comment_official">رسمي</string>
+    <string name="feedbackkit_anonymous">مجهول</string>
+    <string name="feedbackkit_form_title">العنوان</string>
+    <string name="feedbackkit_form_title_placeholder">ملخص موجز لملاحظتك</string>
+    <string name="feedbackkit_form_description">الوصف</string>
+    <string name="feedbackkit_form_description_placeholder">قدم تفاصيل حول ملاحظتك…</string>
+    <string name="feedbackkit_form_category">الفئة</string>
+    <string name="feedbackkit_form_email">البريد الإلكتروني (اختياري)</string>
+    <string name="feedbackkit_form_email_placeholder">تلقي إشعارات عند وجود تحديثات</string>
+    <string name="feedbackkit_form_mailing_list">ابقني على اطلاع عبر النشرة البريدية</string>
+    <string name="feedbackkit_form_mailing_list_operational">رسائل تشغيلية (تحديثات الحالة، الحساب)</string>
+    <string name="feedbackkit_form_mailing_list_marketing">رسائل تسويقية (نشرات إخبارية، عروض)</string>
+    <string name="feedbackkit_back">رجوع</string>
+    <string name="feedbackkit_comments_icon">التعليقات</string>
+    <string name="feedbackkit_vote">تصويت</string>
+    <string name="feedbackkit_remove_vote">إزالة التصويت</string>
+    <string name="feedbackkit_status_pending">قيد الانتظار</string>
+    <string name="feedbackkit_status_approved">موافق عليه</string>
+    <string name="feedbackkit_status_in_progress">قيد التنفيذ</string>
+    <string name="feedbackkit_status_testflight">TestFlight</string>
+    <string name="feedbackkit_status_completed">مكتمل</string>
+    <string name="feedbackkit_status_rejected">مرفوض</string>
+    <string name="feedbackkit_category_feature_request">طلب ميزة</string>
+    <string name="feedbackkit_category_bug_report">تقرير خطأ</string>
+    <string name="feedbackkit_category_improvement">تحسين</string>
+    <string name="feedbackkit_category_other">أخرى</string>
+    <string name="feedbackkit_error_title">خطأ</string>
+    <string name="feedbackkit_error_generic">حدث خطأ</string>
+</resources>

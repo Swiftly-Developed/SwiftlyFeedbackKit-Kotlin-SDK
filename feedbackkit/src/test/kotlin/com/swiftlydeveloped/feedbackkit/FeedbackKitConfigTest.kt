@@ -74,8 +74,8 @@ class FeedbackKitConfigTest {
 
     @Test
     fun `environments have correct urls`() {
-        assertEquals("https://api.swiftlyfeedback.com", Environment.PRODUCTION.baseUrl)
-        assertEquals("https://staging.swiftlyfeedback.com", Environment.STAGING.baseUrl)
+        assertEquals("https://feedbackkit.swiftly-workspace.com", Environment.PRODUCTION.baseUrl)
+        assertEquals("https://api.feedbackkit.testflight.swiftly-developed.com", Environment.STAGING.baseUrl)
         assertEquals("http://10.0.2.2:8080", Environment.LOCAL.baseUrl)
         assertEquals("http://localhost:8080", Environment.LOCAL_DEVICE.baseUrl)
     }

@@ -82,19 +82,25 @@ class FeedbackApi internal constructor(
      * @param description The feedback description.
      * @param category The feedback category.
      * @param email Optional email for the submitter.
+     * @param subscribeToMailingList Whether the user consents to join the project's mailing list.
+     * @param mailingListEmailTypes Email preference types (e.g. listOf("operational", "marketing")). Defaults to both when null.
      * @return The created feedback item.
      */
     suspend fun create(
         title: String,
         description: String,
         category: com.swiftlydeveloped.feedbackkit.models.FeedbackCategory,
-        email: String? = null
+        email: String? = null,
+        subscribeToMailingList: Boolean? = null,
+        mailingListEmailTypes: List<String>? = null
     ): Feedback = create(
         CreateFeedbackRequest(
             title = title,
             description = description,
             category = category,
-            email = email
+            email = email,
+            subscribeToMailingList = subscribeToMailingList,
+            mailingListEmailTypes = mailingListEmailTypes
         )
     )
 }
