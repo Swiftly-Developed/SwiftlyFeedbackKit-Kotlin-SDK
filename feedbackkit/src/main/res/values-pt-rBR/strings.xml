@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedbackkit_list_title">Feedback</string>
+    <string name="feedbackkit_list_empty">Nenhum feedback ainda</string>
+    <string name="feedbackkit_list_empty_description">Seja o primeiro a enviar feedback!</string>
+    <string name="feedbackkit_list_error">Algo deu errado</string>
+    <string name="feedbackkit_list_retry">Tentar novamente</string>
+    <string name="feedbackkit_submit_title">Enviar feedback</string>
+    <string name="feedbackkit_submit_button">Enviar feedback</string>
+    <string name="feedbackkit_detail_title">Detalhes do feedback</string>
+    <string name="feedbackkit_detail_comments">Comentários (%1$d)</string>
+    <string name="feedbackkit_detail_comments_empty">Nenhum comentário ainda. Seja o primeiro a comentar!</string>
+    <string name="feedbackkit_detail_comments_error">Falha ao carregar comentários</string>
+    <string name="feedbackkit_detail_comment_official">Oficial</string>
+    <string name="feedbackkit_anonymous">Anônimo</string>
+    <string name="feedbackkit_form_title">Título</string>
+    <string name="feedbackkit_form_title_placeholder">Resumo breve do seu feedback</string>
+    <string name="feedbackkit_form_description">Descrição</string>
+    <string name="feedbackkit_form_description_placeholder">Forneça detalhes sobre seu feedback…</string>
+    <string name="feedbackkit_form_category">Categoria</string>
+    <string name="feedbackkit_form_email">E-mail (opcional)</string>
+    <string name="feedbackkit_form_email_placeholder">Receba notificações de atualizações</string>
+    <string name="feedbackkit_form_mailing_list">Manter-me atualizado por newsletter</string>
+    <string name="feedbackkit_form_mailing_list_operational">E-mails operacionais (atualizações de status, conta)</string>
+    <string name="feedbackkit_form_mailing_list_marketing">E-mails de marketing (newsletters, promoções)</string>
+    <string name="feedbackkit_back">Voltar</string>
+    <string name="feedbackkit_comments_icon">Comentários</string>
+    <string name="feedbackkit_vote">Votar</string>
+    <string name="feedbackkit_remove_vote">Remover voto</string>
+    <string name="feedbackkit_status_pending">Pendente</string>
+    <string name="feedbackkit_status_approved">Aprovado</string>
+    <string name="feedbackkit_status_in_progress">Em andamento</string>
+    <string name="feedbackkit_status_testflight">TestFlight</string>
+    <string name="feedbackkit_status_completed">Concluído</string>
+    <string name="feedbackkit_status_rejected">Rejeitado</string>
+    <string name="feedbackkit_category_feature_request">Solicitação de recurso</string>
+    <string name="feedbackkit_category_bug_report">Relatório de bug</string>
+    <string name="feedbackkit_category_improvement">Melhoria</string>
+    <string name="feedbackkit_category_other">Outro</string>
+    <string name="feedbackkit_error_title">Erro</string>
+    <string name="feedbackkit_error_generic">Ocorreu um erro</string>
+</resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedbackkit_list_title">Comentarios</string>
+    <string name="feedbackkit_list_empty">Aún no hay comentarios</string>
+    <string name="feedbackkit_list_empty_description">¡Sé el primero en enviar comentarios!</string>
+    <string name="feedbackkit_list_error">Algo salió mal</string>
+    <string name="feedbackkit_list_retry">Reintentar</string>
+    <string name="feedbackkit_submit_title">Enviar comentario</string>
+    <string name="feedbackkit_submit_button">Enviar comentario</string>
+    <string name="feedbackkit_detail_title">Detalles del comentario</string>
+    <string name="feedbackkit_detail_comments">Comentarios (%1$d)</string>
+    <string name="feedbackkit_detail_comments_empty">Aún no hay comentarios. ¡Sé el primero en comentar!</string>
+    <string name="feedbackkit_detail_comments_error">Error al cargar comentarios</string>
+    <string name="feedbackkit_detail_comment_official">Oficial</string>
+    <string name="feedbackkit_anonymous">Anónimo</string>
+    <string name="feedbackkit_form_title">Título</string>
+    <string name="feedbackkit_form_title_placeholder">Resumen breve de tu comentario</string>
+    <string name="feedbackkit_form_description">Descripción</string>
+    <string name="feedbackkit_form_description_placeholder">Proporciona detalles sobre tu comentario…</string>
+    <string name="feedbackkit_form_category">Categoría</string>
+    <string name="feedbackkit_form_email">Correo electrónico (opcional)</string>
+    <string name="feedbackkit_form_email_placeholder">Recibe notificaciones sobre actualizaciones</string>
+    <string name="feedbackkit_form_mailing_list">Mantenerme informado por boletín de correo</string>
+    <string name="feedbackkit_form_mailing_list_operational">Correos operativos (actualizaciones de estado, cuenta)</string>
+    <string name="feedbackkit_form_mailing_list_marketing">Correos de marketing (boletines, promociones)</string>
+    <string name="feedbackkit_back">Atrás</string>
+    <string name="feedbackkit_comments_icon">Comentarios</string>
+    <string name="feedbackkit_vote">Votar</string>
+    <string name="feedbackkit_remove_vote">Quitar voto</string>
+    <string name="feedbackkit_status_pending">Pendiente</string>
+    <string name="feedbackkit_status_approved">Aprobado</string>
+    <string name="feedbackkit_status_in_progress">En progreso</string>
+    <string name="feedbackkit_status_testflight">TestFlight</string>
+    <string name="feedbackkit_status_completed">Completado</string>
+    <string name="feedbackkit_status_rejected">Rechazado</string>
+    <string name="feedbackkit_category_feature_request">Solicitud de función</string>
+    <string name="feedbackkit_category_bug_report">Reporte de error</string>
+    <string name="feedbackkit_category_improvement">Mejora</string>
+    <string name="feedbackkit_category_other">Otro</string>
+    <string name="feedbackkit_error_title">Error</string>
+    <string name="feedbackkit_error_generic">Ocurrió un error</string>
+</resources>

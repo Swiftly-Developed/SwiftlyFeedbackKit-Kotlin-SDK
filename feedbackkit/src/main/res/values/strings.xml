@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Feedback List -->
+    <string name="feedbackkit_list_title">Feedback</string>
+    <string name="feedbackkit_list_empty">No feedback yet</string>
+    <string name="feedbackkit_list_empty_description">Be the first to submit feedback!</string>
+    <string name="feedbackkit_list_error">Something went wrong</string>
+    <string name="feedbackkit_list_retry">Retry</string>
+
+    <!-- Submit Feedback -->
+    <string name="feedbackkit_submit_title">Submit Feedback</string>
+    <string name="feedbackkit_submit_button">Submit Feedback</string>
+
+    <!-- Feedback Detail -->
+    <string name="feedbackkit_detail_title">Feedback Details</string>
+    <string name="feedbackkit_detail_comments">Comments (%1$d)</string>
+    <string name="feedbackkit_detail_comments_empty">No comments yet. Be the first to comment!</string>
+    <string name="feedbackkit_detail_comments_error">Failed to load comments</string>
+    <string name="feedbackkit_detail_comment_official">Official</string>
+    <string name="feedbackkit_anonymous">Anonymous</string>
+
+    <!-- Form Fields -->
+    <string name="feedbackkit_form_title">Title</string>
+    <string name="feedbackkit_form_title_placeholder">Brief summary of your feedback</string>
+    <string name="feedbackkit_form_description">Description</string>
+    <string name="feedbackkit_form_description_placeholder">Provide details about your feedback…</string>
+    <string name="feedbackkit_form_category">Category</string>
+    <string name="feedbackkit_form_email">Email (optional)</string>
+    <string name="feedbackkit_form_email_placeholder">Get notified about updates</string>
+    <string name="feedbackkit_form_mailing_list">Keep me updated via email newsletter</string>
+    <string name="feedbackkit_form_mailing_list_operational">Operational emails (status updates, account)</string>
+    <string name="feedbackkit_form_mailing_list_marketing">Marketing emails (newsletters, promotions)</string>
+
+    <!-- Buttons -->
+    <string name="feedbackkit_back">Back</string>
+    <string name="feedbackkit_comments_icon">Comments</string>
+
+    <!-- Vote -->
+    <string name="feedbackkit_vote">Vote</string>
+    <string name="feedbackkit_remove_vote">Remove vote</string>
+
+    <!-- Status -->
+    <string name="feedbackkit_status_pending">Pending</string>
+    <string name="feedbackkit_status_approved">Approved</string>
+    <string name="feedbackkit_status_in_progress">In Progress</string>
+    <string name="feedbackkit_status_testflight">TestFlight</string>
+    <string name="feedbackkit_status_completed">Completed</string>
+    <string name="feedbackkit_status_rejected">Rejected</string>
+
+    <!-- Categories -->
+    <string name="feedbackkit_category_feature_request">Feature Request</string>
+    <string name="feedbackkit_category_bug_report">Bug Report</string>
+    <string name="feedbackkit_category_improvement">Improvement</string>
+    <string name="feedbackkit_category_other">Other</string>
+
+    <!-- Errors -->
+    <string name="feedbackkit_error_title">Error</string>
+    <string name="feedbackkit_error_generic">An error occurred</string>
+</resources>

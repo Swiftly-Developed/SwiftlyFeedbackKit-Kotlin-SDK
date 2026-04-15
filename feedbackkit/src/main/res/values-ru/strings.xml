@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedbackkit_list_title">Отзывы</string>
+    <string name="feedbackkit_list_empty">Отзывов пока нет</string>
+    <string name="feedbackkit_list_empty_description">Будьте первым, кто отправит отзыв!</string>
+    <string name="feedbackkit_list_error">Что-то пошло не так</string>
+    <string name="feedbackkit_list_retry">Повторить</string>
+    <string name="feedbackkit_submit_title">Отправить отзыв</string>
+    <string name="feedbackkit_submit_button">Отправить отзыв</string>
+    <string name="feedbackkit_detail_title">Подробности отзыва</string>
+    <string name="feedbackkit_detail_comments">Комментарии (%1$d)</string>
+    <string name="feedbackkit_detail_comments_empty">Комментариев пока нет. Будьте первым!</string>
+    <string name="feedbackkit_detail_comments_error">Не удалось загрузить комментарии</string>
+    <string name="feedbackkit_detail_comment_official">Официальный</string>
+    <string name="feedbackkit_anonymous">Аноним</string>
+    <string name="feedbackkit_form_title">Заголовок</string>
+    <string name="feedbackkit_form_title_placeholder">Краткое описание вашего отзыва</string>
+    <string name="feedbackkit_form_description">Описание</string>
+    <string name="feedbackkit_form_description_placeholder">Укажите подробности вашего отзыва…</string>
+    <string name="feedbackkit_form_category">Категория</string>
+    <string name="feedbackkit_form_email">Email (необязательно)</string>
+    <string name="feedbackkit_form_email_placeholder">Получать уведомления об обновлениях</string>
+    <string name="feedbackkit_form_mailing_list">Подписаться на рассылку обновлений</string>
+    <string name="feedbackkit_form_mailing_list_operational">Операционные письма (обновления статуса, аккаунт)</string>
+    <string name="feedbackkit_form_mailing_list_marketing">Маркетинговые письма (рассылки, акции)</string>
+    <string name="feedbackkit_back">Назад</string>
+    <string name="feedbackkit_comments_icon">Комментарии</string>
+    <string name="feedbackkit_vote">Голосовать</string>
+    <string name="feedbackkit_remove_vote">Отменить голос</string>
+    <string name="feedbackkit_status_pending">На рассмотрении</string>
+    <string name="feedbackkit_status_approved">Одобрено</string>
+    <string name="feedbackkit_status_in_progress">В работе</string>
+    <string name="feedbackkit_status_testflight">TestFlight</string>
+    <string name="feedbackkit_status_completed">Завершено</string>
+    <string name="feedbackkit_status_rejected">Отклонено</string>
+    <string name="feedbackkit_category_feature_request">Запрос функции</string>
+    <string name="feedbackkit_category_bug_report">Отчёт об ошибке</string>
+    <string name="feedbackkit_category_improvement">Улучшение</string>
+    <string name="feedbackkit_category_other">Другое</string>
+    <string name="feedbackkit_error_title">Ошибка</string>
+    <string name="feedbackkit_error_generic">Произошла ошибка</string>
+</resources>
