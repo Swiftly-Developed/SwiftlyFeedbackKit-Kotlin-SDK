@@ -8,7 +8,7 @@ Add the dependency to your app's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.swiftlydeveloped:feedbackkit:1.0.0")
+    implementation("com.swiftlydeveloped:feedbackkit:1.1.1")
 }
 ```
 
@@ -18,7 +18,7 @@ Or add via Maven:
 <dependency>
     <groupId>com.swiftlydeveloped</groupId>
     <artifactId>feedbackkit</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 

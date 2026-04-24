@@ -25,7 +25,9 @@ data class Feedback(
     val updatedAt: String? = null,
     @SerialName("user_id")
     val userId: String? = null,
-    val email: String? = null
+    val email: String? = null,
+    @SerialName("is_hidden_over_limit")
+    val isHiddenOverLimit: Boolean? = null
 ) {
     /**
      * Whether this feedback can be voted on (based on status).

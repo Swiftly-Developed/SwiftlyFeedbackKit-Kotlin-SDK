@@ -5,7 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2024-02-08
+## [1.1.1] - 2026-04-24
+
+### Changed
+
+- Version alignment with Swift SDK 1.1.1 hotfix (Xcode 26 / Swift 6.2 compatibility). No functional changes to this SDK.
+
+## [1.1.0] - 2026-04-15
+
+### Added
+
+- LICENSE file (MIT)
+- CONTRIBUTING.md with contribution guidelines
+- SECURITY.md with vulnerability reporting policy
+- CODE_OF_CONDUCT.md (Contributor Covenant v2.1)
+- SUPPORT.md with support channels
+
+### Changed
+
+- Migrated API URLs to getfeedbackkit.com
+- Fixed developer email in gradle.properties
+- Updated version references in README installation examples
+- Standardized documentation across all FeedbackKit SDKs
+
+## [1.0.1] - 2026-02-09
+
+### Changed
+
+- Updated production URLs
+- Bumped version for republishing
+
+## [1.0.0] - 2026-02-08
 
 ### Added
 
