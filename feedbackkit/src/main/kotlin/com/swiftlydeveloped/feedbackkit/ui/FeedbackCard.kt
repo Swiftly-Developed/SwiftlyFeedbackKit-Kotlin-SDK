@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.swiftlydeveloped.feedbackkit.R
+import com.getfeedbackkit.feedbackkit.R
 import com.swiftlydeveloped.feedbackkit.models.Feedback
 import com.swiftlydeveloped.feedbackkit.models.FeedbackCategory
 import com.swiftlydeveloped.feedbackkit.models.FeedbackStatus

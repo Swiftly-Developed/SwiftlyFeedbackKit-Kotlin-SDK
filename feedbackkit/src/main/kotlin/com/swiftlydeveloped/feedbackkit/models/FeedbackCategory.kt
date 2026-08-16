@@ -1,7 +1,7 @@
 package com.swiftlydeveloped.feedbackkit.models
 
 import androidx.annotation.StringRes
-import com.swiftlydeveloped.feedbackkit.R
+import com.getfeedbackkit.feedbackkit.R
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

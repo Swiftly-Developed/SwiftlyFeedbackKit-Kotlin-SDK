@@ -46,7 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.swiftlydeveloped.feedbackkit.FeedbackKit
-import com.swiftlydeveloped.feedbackkit.R
+import com.getfeedbackkit.feedbackkit.R
 import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
 import com.swiftlydeveloped.feedbackkit.errors.userMessage
 import com.swiftlydeveloped.feedbackkit.models.CreateFeedbackRequest

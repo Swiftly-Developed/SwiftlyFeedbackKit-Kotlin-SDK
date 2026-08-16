@@ -74,8 +74,12 @@ class FeedbackKitConfigTest {
 
     @Test
     fun `environments have correct urls`() {
-        assertEquals("https://getfeedbackkit.com", Environment.PRODUCTION.baseUrl)
-        assertEquals("https://testflight.getfeedbackkit.com", Environment.STAGING.baseUrl)
+        // Repaired 2026-08-15 (QA-UNIT10-SDK-PARITY): this case asserted the pre-`api.`
+        // hosts (`https://getfeedbackkit.com` / `https://testflight.getfeedbackkit.com`),
+        // which appear nowhere in any source — the SDK has always pointed at the `api.`
+        // hosts the workspace documents. The TEST was stale; the SDK was right.
+        assertEquals("https://api.prod.getfeedbackkit.com", Environment.PRODUCTION.baseUrl)
+        assertEquals("https://api.testflight.getfeedbackkit.com", Environment.STAGING.baseUrl)
         assertEquals("http://10.0.2.2:8080", Environment.LOCAL.baseUrl)
         assertEquals("http://localhost:8080", Environment.LOCAL_DEVICE.baseUrl)
     }

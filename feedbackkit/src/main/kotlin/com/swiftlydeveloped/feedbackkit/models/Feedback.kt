@@ -25,6 +25,11 @@ data class Feedback(
     val updatedAt: String? = null,
     @SerialName("user_id")
     val userId: String? = null,
+    // The server's wire key is user_email (FeedbackResponseDTO.userEmail under the global
+    // .convertToSnakeCase strategy). This field carried no @SerialName until 2026-08-15,
+    // so it read the wire key `email` — which the server never sends — and was null on
+    // every payload (QA-UNIT05-FEEDBACK F5, fixed by QA-UNIT10-SDK-PARITY).
+    @SerialName("user_email")
     val email: String? = null,
     @SerialName("is_hidden_over_limit")
     val isHiddenOverLimit: Boolean? = null
