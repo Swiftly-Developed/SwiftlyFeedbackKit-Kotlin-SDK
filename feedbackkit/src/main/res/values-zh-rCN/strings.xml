@@ -39,4 +39,13 @@
     <string name="feedbackkit_category_other">其他</string>
     <string name="feedbackkit_error_title">错误</string>
     <string name="feedbackkit_error_generic">发生了错误</string>
+    <string name="feedbackkit_error_auth">身份验证失败。请检查 API 密钥。</string>
+    <string name="feedbackkit_error_payment">此功能需要升级订阅。</string>
+    <string name="feedbackkit_error_forbidden">你没有执行此操作的权限。</string>
+    <string name="feedbackkit_error_not_found">未找到所请求的内容。</string>
+    <string name="feedbackkit_error_timeout">请求超时。请重试。</string>
+    <string name="feedbackkit_error_network">网络错误。请检查网络连接。</string>
+    <string name="feedbackkit_error_server">服务器错误。请稍后重试。</string>
+    <string name="feedbackkit_error_rate_limit">请求过于频繁。请稍后再试。</string>
+    <string name="feedbackkit_error_unexpected">发生了意外错误。</string>
 </resources>

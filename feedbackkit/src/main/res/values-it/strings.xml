@@ -39,4 +39,13 @@
     <string name="feedbackkit_category_other">Altro</string>
     <string name="feedbackkit_error_title">Errore</string>
     <string name="feedbackkit_error_generic">Si è verificato un errore</string>
+    <string name="feedbackkit_error_auth">Autenticazione non riuscita. Controlla la chiave API.</string>
+    <string name="feedbackkit_error_payment">Questa funzione richiede un upgrade dell\'abbonamento.</string>
+    <string name="feedbackkit_error_forbidden">Non hai l\'autorizzazione per eseguire questa azione.</string>
+    <string name="feedbackkit_error_not_found">L\'elemento richiesto non è stato trovato.</string>
+    <string name="feedbackkit_error_timeout">Tempo della richiesta scaduto. Riprova.</string>
+    <string name="feedbackkit_error_network">Errore di rete. Controlla la connessione.</string>
+    <string name="feedbackkit_error_server">Errore del server. Riprova più tardi.</string>
+    <string name="feedbackkit_error_rate_limit">Troppe richieste. Riprova tra un momento.</string>
+    <string name="feedbackkit_error_unexpected">Si è verificato un errore imprevisto.</string>
 </resources>

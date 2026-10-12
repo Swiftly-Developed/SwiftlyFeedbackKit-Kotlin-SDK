@@ -8,6 +8,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class TrackedEvent(
+    /** Wire key is `event_name` (`TrackViewEventDTO.eventName`). The Kotlin name stays `name`. */
+    @SerialName("event_name")
     val name: String,
     val properties: Map<String, String>? = null,
     @SerialName("user_id")
@@ -20,7 +22,19 @@ data class TrackedEvent(
  */
 @Serializable
 data class TrackEventResponse(
-    val success: Boolean,
+    /**
+     * The server's event payload has never carried `success`. A successful HTTP
+     * response is the success signal.
+     */
+    val success: Boolean = true,
     @SerialName("event_id")
-    val eventId: String? = null
+    val eventId: String? = null,
+    val id: String? = null,
+    @SerialName("event_name")
+    val eventName: String? = null,
+    @SerialName("user_id")
+    val userId: String? = null,
+    val properties: Map<String, String>? = null,
+    @SerialName("created_at")
+    val createdAt: String? = null
 )

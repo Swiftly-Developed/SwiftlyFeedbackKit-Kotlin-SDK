@@ -3,8 +3,10 @@ package com.swiftlydeveloped.feedbackkit
 import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
 import com.swiftlydeveloped.feedbackkit.errors.isRecoverable
 import com.swiftlydeveloped.feedbackkit.errors.userMessage
+import com.swiftlydeveloped.feedbackkit.http.FeedbackKitHttpClient
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.net.SocketTimeoutException
@@ -20,6 +22,7 @@ class FeedbackKitErrorTest {
         assertTrue(FeedbackKitError.fromStatusCode(403, "Forbidden") is FeedbackKitError.ForbiddenError)
         assertTrue(FeedbackKitError.fromStatusCode(404, "Not found") is FeedbackKitError.NotFoundError)
         assertTrue(FeedbackKitError.fromStatusCode(409, "Conflict") is FeedbackKitError.ConflictError)
+        assertTrue(FeedbackKitError.fromStatusCode(429, "Too many requests") is FeedbackKitError.RateLimitError)
         assertTrue(FeedbackKitError.fromStatusCode(500, "Server error") is FeedbackKitError.ServerError)
         assertTrue(FeedbackKitError.fromStatusCode(502, "Bad gateway") is FeedbackKitError.ServerError)
         assertTrue(FeedbackKitError.fromStatusCode(999, "Unknown") is FeedbackKitError.UnknownError)
@@ -63,6 +66,7 @@ class FeedbackKitErrorTest {
         assertEquals("NETWORK_ERROR", FeedbackKitError.NetworkError().code)
         assertEquals("TIMEOUT", FeedbackKitError.NetworkError(isTimeout = true).code)
         assertEquals("SERVER_ERROR", FeedbackKitError.ServerError().code)
+        assertEquals("RATE_LIMITED", FeedbackKitError.RateLimitError().code)
         assertEquals("UNKNOWN", FeedbackKitError.UnknownError().code)
     }
 
@@ -76,6 +80,25 @@ class FeedbackKitErrorTest {
         assertEquals(400, FeedbackKitError.ValidationError().statusCode)
         assertEquals(0, FeedbackKitError.NetworkError().statusCode)
         assertEquals(500, FeedbackKitError.ServerError().statusCode)
+        assertEquals(429, FeedbackKitError.RateLimitError().statusCode)
+        assertEquals(422, FeedbackKitError.fromStatusCode(422, "Validation failed").statusCode)
+    }
+
+    @Test
+    fun `rate limit keeps a delta-seconds Retry-After and ignores an HTTP-date`() {
+        assertEquals(30, FeedbackKitHttpClient.retryAfterSeconds("30"))
+        assertEquals(0, FeedbackKitHttpClient.retryAfterSeconds(" 0 "))
+        assertNull(FeedbackKitHttpClient.retryAfterSeconds("Wed, 21 Oct 2015 07:28:00 GMT"))
+        assertNull(FeedbackKitHttpClient.retryAfterSeconds(null))
+        assertNull(FeedbackKitHttpClient.retryAfterSeconds("  "))
+
+        val error = FeedbackKitError.fromStatusCode(
+            429,
+            "Too many requests",
+            retryAfterSeconds = 12
+        )
+        assertTrue(error is FeedbackKitError.RateLimitError)
+        assertEquals(12, (error as FeedbackKitError.RateLimitError).retryAfterSeconds)
     }
 
     @Test
@@ -88,6 +111,7 @@ class FeedbackKitErrorTest {
         assertFalse(FeedbackKitError.ValidationError().isRecoverable)
         assertTrue(FeedbackKitError.NetworkError().isRecoverable)
         assertTrue(FeedbackKitError.ServerError().isRecoverable)
+        assertTrue(FeedbackKitError.RateLimitError().isRecoverable)
     }
 
     @Test
@@ -119,6 +143,10 @@ class FeedbackKitErrorTest {
         assertEquals(
             "Server error. Please try again later.",
             FeedbackKitError.ServerError().userMessage
+        )
+        assertEquals(
+            "Too many requests. Please try again in a moment.",
+            FeedbackKitError.RateLimitError().userMessage
         )
     }
 }

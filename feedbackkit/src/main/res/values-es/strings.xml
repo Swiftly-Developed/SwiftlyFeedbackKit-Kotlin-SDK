@@ -39,4 +39,13 @@
     <string name="feedbackkit_category_other">Otro</string>
     <string name="feedbackkit_error_title">Error</string>
     <string name="feedbackkit_error_generic">Ocurrió un error</string>
+    <string name="feedbackkit_error_auth">Error de autenticación. Comprueba tu clave de API.</string>
+    <string name="feedbackkit_error_payment">Esta función requiere una mejora de la suscripción.</string>
+    <string name="feedbackkit_error_forbidden">No tienes permiso para realizar esta acción.</string>
+    <string name="feedbackkit_error_not_found">No se encontró el elemento solicitado.</string>
+    <string name="feedbackkit_error_timeout">Se agotó el tiempo de la solicitud. Inténtalo de nuevo.</string>
+    <string name="feedbackkit_error_network">Error de red. Comprueba tu conexión.</string>
+    <string name="feedbackkit_error_server">Error del servidor. Inténtalo de nuevo más tarde.</string>
+    <string name="feedbackkit_error_rate_limit">Demasiadas solicitudes. Inténtalo de nuevo en un momento.</string>
+    <string name="feedbackkit_error_unexpected">Se produjo un error inesperado.</string>
 </resources>

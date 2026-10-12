@@ -8,9 +8,16 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class VoteResponse(
-    val success: Boolean,
+    /**
+     * The server's vote payload has never carried `success`. A successful HTTP
+     * response is the success signal; the default keeps older call sites that
+     * read this property compiling.
+     */
+    val success: Boolean = true,
     @SerialName("vote_count")
     val voteCount: Int,
     @SerialName("has_voted")
-    val hasVoted: Boolean
+    val hasVoted: Boolean,
+    @SerialName("feedback_id")
+    val feedbackId: String? = null
 )

@@ -39,4 +39,13 @@
     <string name="feedbackkit_category_other">その他</string>
     <string name="feedbackkit_error_title">エラー</string>
     <string name="feedbackkit_error_generic">エラーが発生しました</string>
+    <string name="feedbackkit_error_auth">認証に失敗しました。APIキーを確認してください。</string>
+    <string name="feedbackkit_error_payment">この機能を使うにはサブスクリプションのアップグレードが必要です。</string>
+    <string name="feedbackkit_error_forbidden">この操作を行う権限がありません。</string>
+    <string name="feedbackkit_error_not_found">要求された項目が見つかりません。</string>
+    <string name="feedbackkit_error_timeout">リクエストがタイムアウトしました。もう一度お試しください。</string>
+    <string name="feedbackkit_error_network">ネットワークエラーです。接続を確認してください。</string>
+    <string name="feedbackkit_error_server">サーバーエラーです。しばらくしてからもう一度お試しください。</string>
+    <string name="feedbackkit_error_rate_limit">リクエストが多すぎます。しばらくしてからもう一度お試しください。</string>
+    <string name="feedbackkit_error_unexpected">予期しないエラーが発生しました。</string>
 </resources>

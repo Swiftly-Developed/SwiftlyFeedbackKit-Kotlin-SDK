@@ -24,7 +24,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.swiftlydeveloped.feedbackkit.R
+import com.getfeedbackkit.feedbackkit.R
+import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
 import com.swiftlydeveloped.feedbackkit.models.Feedback
 import com.swiftlydeveloped.feedbackkit.models.FeedbackCategory
 import com.swiftlydeveloped.feedbackkit.models.FeedbackStatus
@@ -49,19 +50,41 @@ fun FeedbackCard(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     onVoteChange: ((VoteResponse) -> Unit)? = null,
-    theme: FeedbackKitTheme = LocalFeedbackKitTheme.current
+    theme: FeedbackKitTheme = LocalFeedbackKitTheme.current,
+    onVoteError: ((FeedbackKitError) -> Unit)? = null
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(theme.borderRadius.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = theme.cardBackgroundColor
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = theme.cardElevation.dp
-        ),
-        onClick = onClick ?: {}
-    ) {
+    val shape = RoundedCornerShape(theme.borderRadius.dp)
+    val colors = CardDefaults.cardColors(containerColor = theme.cardBackgroundColor)
+    val elevation = CardDefaults.cardElevation(defaultElevation = theme.cardElevation.dp)
+    if (onClick != null) {
+        Card(
+            onClick = onClick,
+            modifier = modifier.fillMaxWidth(),
+            shape = shape,
+            colors = colors,
+            elevation = elevation
+        ) {
+            FeedbackCardBody(feedback, onVoteChange, onVoteError, theme)
+        }
+    } else {
+        Card(
+            modifier = modifier.fillMaxWidth(),
+            shape = shape,
+            colors = colors,
+            elevation = elevation
+        ) {
+            FeedbackCardBody(feedback, onVoteChange, onVoteError, theme)
+        }
+    }
+}
+
+@Composable
+private fun FeedbackCardBody(
+    feedback: Feedback,
+    onVoteChange: ((VoteResponse) -> Unit)?,
+    onVoteError: ((FeedbackKitError) -> Unit)?,
+    theme: FeedbackKitTheme
+) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -72,7 +95,8 @@ fun FeedbackCard(
             VoteButton(
                 feedback = feedback,
                 onVoteChange = onVoteChange,
-                theme = theme
+                theme = theme,
+                onError = onVoteError
             )
 
             // Content
@@ -131,7 +155,6 @@ fun FeedbackCard(
                 }
             }
         }
-    }
 }
 
 @Preview(showBackground = true)

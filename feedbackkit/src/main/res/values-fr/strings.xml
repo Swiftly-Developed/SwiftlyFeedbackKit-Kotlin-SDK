@@ -39,4 +39,13 @@
     <string name="feedbackkit_category_other">Autre</string>
     <string name="feedbackkit_error_title">Erreur</string>
     <string name="feedbackkit_error_generic">Une erreur est survenue</string>
+    <string name="feedbackkit_error_auth">Échec de l\'authentification. Vérifiez votre clé API.</string>
+    <string name="feedbackkit_error_payment">Cette fonctionnalité nécessite une mise à niveau de l\'abonnement.</string>
+    <string name="feedbackkit_error_forbidden">Vous n\'avez pas l\'autorisation d\'effectuer cette action.</string>
+    <string name="feedbackkit_error_not_found">L\'élément demandé est introuvable.</string>
+    <string name="feedbackkit_error_timeout">Le délai de la requête a expiré. Veuillez réessayer.</string>
+    <string name="feedbackkit_error_network">Erreur réseau. Vérifiez votre connexion.</string>
+    <string name="feedbackkit_error_server">Erreur du serveur. Veuillez réessayer plus tard.</string>
+    <string name="feedbackkit_error_rate_limit">Trop de requêtes. Veuillez réessayer dans un instant.</string>
+    <string name="feedbackkit_error_unexpected">Une erreur inattendue s\'est produite.</string>
 </resources>

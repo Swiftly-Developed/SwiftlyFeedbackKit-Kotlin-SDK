@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import kotlinx.coroutines.CancellationException
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.swiftlydeveloped.feedbackkit.FeedbackKit
-import com.swiftlydeveloped.feedbackkit.R
+import com.getfeedbackkit.feedbackkit.R
 import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
 import com.swiftlydeveloped.feedbackkit.models.Comment
 import com.swiftlydeveloped.feedbackkit.models.Feedback
@@ -78,8 +79,12 @@ fun FeedbackDetailView(
 
     // Load comments
     LaunchedEffect(feedback.id) {
+        isLoadingComments = true
+        commentsError = null
         try {
             comments = FeedbackKit.shared.comments.list(feedback.id)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             commentsError = FeedbackKitError.fromException(e)
         } finally {

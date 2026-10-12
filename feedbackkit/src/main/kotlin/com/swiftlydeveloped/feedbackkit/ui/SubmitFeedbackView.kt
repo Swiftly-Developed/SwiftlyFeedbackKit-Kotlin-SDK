@@ -46,14 +46,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.swiftlydeveloped.feedbackkit.FeedbackKit
-import com.swiftlydeveloped.feedbackkit.R
+import com.getfeedbackkit.feedbackkit.R
 import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
-import com.swiftlydeveloped.feedbackkit.errors.userMessage
+import com.swiftlydeveloped.feedbackkit.errors.localizedUserMessage
 import com.swiftlydeveloped.feedbackkit.models.CreateFeedbackRequest
 import com.swiftlydeveloped.feedbackkit.models.Feedback
 import com.swiftlydeveloped.feedbackkit.models.FeedbackCategory
 import com.swiftlydeveloped.feedbackkit.state.LocalFeedbackKitTheme
 import com.swiftlydeveloped.feedbackkit.theme.FeedbackKitTheme
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 /**
@@ -129,6 +130,8 @@ fun SubmitFeedbackView(
 
                 val feedback = FeedbackKit.shared.feedback.create(request)
                 onSubmitSuccess?.invoke(feedback)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 error = FeedbackKitError.fromException(e)
             } finally {
@@ -314,7 +317,7 @@ fun SubmitFeedbackView(
             // Error message
             error?.let {
                 Text(
-                    text = it.userMessage,
+                    text = it.localizedUserMessage(),
                     color = theme.errorColor,
                     fontSize = 14.sp
                 )

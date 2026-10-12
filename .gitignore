@@ -83,5 +83,8 @@ lint/reports/
 # Mac OS
 .DS_Store
 
-# Gradle wrapper jar
-gradle/wrapper/gradle-wrapper.jar
+# NOTE: gradle/wrapper/gradle-wrapper.jar is deliberately NOT ignored.
+# It was, until 2026-08-15, which meant ./gradlew died with
+# ClassNotFoundException: GradleWrapperMain on every fresh clone — the wrapper
+# exists precisely so the build needs no preinstalled Gradle, and ignoring its
+# jar defeats that. Gradle's own guidance is to commit it. Keep it tracked.

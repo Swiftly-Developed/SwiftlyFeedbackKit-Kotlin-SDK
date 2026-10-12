@@ -6,9 +6,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
 private val Context.feedbackKitDataStore: DataStore<Preferences> by preferencesDataStore(
     name = "feedbackkit_preferences"
@@ -136,4 +138,12 @@ class FeedbackKitStorage internal constructor(
         private val USER_EMAIL_KEY = stringPreferencesKey("user_email")
         private val USER_NAME_KEY = stringPreferencesKey("user_name")
     }
+}
+
+/**
+ * The user id an older build wrote with [FeedbackKitStorage.setUserId].
+ * Blank values count as absent. The read runs on [Dispatchers.IO].
+ */
+internal fun readDataStoreUserId(context: Context): String? = runBlocking(Dispatchers.IO) {
+    FeedbackKitStorage(context).getUserId()?.trim()?.takeIf { it.isNotEmpty() }
 }

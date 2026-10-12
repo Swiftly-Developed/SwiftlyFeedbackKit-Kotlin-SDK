@@ -18,13 +18,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.swiftlydeveloped.feedbackkit.FeedbackKit
-import com.swiftlydeveloped.feedbackkit.R
+import com.getfeedbackkit.feedbackkit.R
+import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
+import com.swiftlydeveloped.feedbackkit.errors.localizedUserMessage
 import com.swiftlydeveloped.feedbackkit.models.Feedback
 import com.swiftlydeveloped.feedbackkit.models.VoteResponse
 import com.swiftlydeveloped.feedbackkit.state.LocalFeedbackKitTheme
@@ -46,7 +50,8 @@ fun VoteButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = feedback.canVote,
     onVoteChange: ((VoteResponse) -> Unit)? = null,
-    theme: FeedbackKitTheme = LocalFeedbackKitTheme.current
+    theme: FeedbackKitTheme = LocalFeedbackKitTheme.current,
+    onError: ((FeedbackKitError) -> Unit)? = null
 ) {
     // Local state for optimistic updates
     var localHasVoted by remember(feedback.id, feedback.hasVoted) {
@@ -56,6 +61,8 @@ fun VoteButton(
         mutableIntStateOf(feedback.voteCount)
     }
     var isLoading by remember { mutableStateOf(false) }
+    var voteError by remember { mutableStateOf<FeedbackKitError?>(null) }
+    val announcedError = voteError?.localizedUserMessage()
 
     val scope = rememberCoroutineScope()
 
@@ -84,27 +91,36 @@ fun VoteButton(
                 localVoteCount += if (localHasVoted) 1 else -1
                 isLoading = true
 
-                try {
-                    val response = if (previousHasVoted) {
-                        FeedbackKit.shared.votes.unvote(feedback.id)
-                    } else {
-                        FeedbackKit.shared.votes.vote(feedback.id)
+                voteError = null
+                val outcome = toggleVote(
+                    currentlyVoted = previousHasVoted,
+                    feedbackId = feedback.id,
+                    vote = { FeedbackKit.shared.votes.vote(it) },
+                    unvote = { FeedbackKit.shared.votes.unvote(it) }
+                )
+                when (outcome) {
+                    is VoteToggleOutcome.Applied -> {
+                        localHasVoted = outcome.response.hasVoted
+                        localVoteCount = outcome.response.voteCount
+                        onVoteChange?.invoke(outcome.response)
                     }
-
-                    // Update with server response
-                    localHasVoted = response.hasVoted
-                    localVoteCount = response.voteCount
-                    onVoteChange?.invoke(response)
-                } catch (e: Exception) {
-                    // Revert on error
-                    localHasVoted = previousHasVoted
-                    localVoteCount = previousVoteCount
-                } finally {
-                    isLoading = false
+                    is VoteToggleOutcome.Failed -> {
+                        localHasVoted = previousHasVoted
+                        localVoteCount = previousVoteCount
+                        voteError = outcome.error
+                        onError?.invoke(outcome.error)
+                    }
                 }
+                isLoading = false
             }
         },
-        modifier = modifier.size(56.dp),
+        modifier = modifier
+            .size(56.dp)
+            .semantics {
+                if (announcedError != null) {
+                    error(announcedError)
+                }
+            },
         shape = RoundedCornerShape(theme.borderRadius.dp),
         color = backgroundColor,
         enabled = enabled
@@ -140,7 +156,8 @@ fun VoteButton(
     canVote: Boolean = true,
     modifier: Modifier = Modifier,
     onVoteChange: ((VoteResponse) -> Unit)? = null,
-    theme: FeedbackKitTheme = LocalFeedbackKitTheme.current
+    theme: FeedbackKitTheme = LocalFeedbackKitTheme.current,
+    onError: ((FeedbackKitError) -> Unit)? = null
 ) {
     // Local state for optimistic updates
     var localHasVoted by remember(feedbackId, hasVoted) {
@@ -150,6 +167,8 @@ fun VoteButton(
         mutableIntStateOf(voteCount)
     }
     var isLoading by remember { mutableStateOf(false) }
+    var voteError by remember { mutableStateOf<FeedbackKitError?>(null) }
+    val announcedError = voteError?.localizedUserMessage()
 
     val scope = rememberCoroutineScope()
 
@@ -178,27 +197,36 @@ fun VoteButton(
                 localVoteCount += if (localHasVoted) 1 else -1
                 isLoading = true
 
-                try {
-                    val response = if (previousHasVoted) {
-                        FeedbackKit.shared.votes.unvote(feedbackId)
-                    } else {
-                        FeedbackKit.shared.votes.vote(feedbackId)
+                voteError = null
+                val outcome = toggleVote(
+                    currentlyVoted = previousHasVoted,
+                    feedbackId = feedbackId,
+                    vote = { FeedbackKit.shared.votes.vote(it) },
+                    unvote = { FeedbackKit.shared.votes.unvote(it) }
+                )
+                when (outcome) {
+                    is VoteToggleOutcome.Applied -> {
+                        localHasVoted = outcome.response.hasVoted
+                        localVoteCount = outcome.response.voteCount
+                        onVoteChange?.invoke(outcome.response)
                     }
-
-                    // Update with server response
-                    localHasVoted = response.hasVoted
-                    localVoteCount = response.voteCount
-                    onVoteChange?.invoke(response)
-                } catch (e: Exception) {
-                    // Revert on error
-                    localHasVoted = previousHasVoted
-                    localVoteCount = previousVoteCount
-                } finally {
-                    isLoading = false
+                    is VoteToggleOutcome.Failed -> {
+                        localHasVoted = previousHasVoted
+                        localVoteCount = previousVoteCount
+                        voteError = outcome.error
+                        onError?.invoke(outcome.error)
+                    }
                 }
+                isLoading = false
             }
         },
-        modifier = modifier.size(56.dp),
+        modifier = modifier
+            .size(56.dp)
+            .semantics {
+                if (announcedError != null) {
+                    error(announcedError)
+                }
+            },
         shape = RoundedCornerShape(theme.borderRadius.dp),
         color = backgroundColor,
         enabled = canVote

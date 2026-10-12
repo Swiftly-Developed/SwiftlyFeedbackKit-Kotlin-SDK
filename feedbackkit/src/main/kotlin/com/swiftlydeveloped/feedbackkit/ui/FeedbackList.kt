@@ -20,6 +20,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -27,9 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.swiftlydeveloped.feedbackkit.R
+import com.getfeedbackkit.feedbackkit.R
 import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
-import com.swiftlydeveloped.feedbackkit.errors.userMessage
+import com.swiftlydeveloped.feedbackkit.errors.localizedUserMessage
 import com.swiftlydeveloped.feedbackkit.models.Feedback
 import com.swiftlydeveloped.feedbackkit.models.FeedbackCategory
 import com.swiftlydeveloped.feedbackkit.models.FeedbackStatus
@@ -62,7 +63,8 @@ fun FeedbackList(
     errorContent: @Composable (FeedbackKitError) -> Unit = { error ->
         DefaultErrorContent(error = error, onRetry = { state.load() }, theme = theme)
     },
-    loadingContent: @Composable () -> Unit = { DefaultLoadingContent(theme) }
+    loadingContent: @Composable () -> Unit = { DefaultLoadingContent(theme) },
+    onVoteError: ((FeedbackKitError) -> Unit)? = null
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when {
@@ -94,14 +96,15 @@ fun FeedbackList(
                     ) { feedback ->
                         FeedbackCard(
                             feedback = feedback,
-                            onClick = { onFeedbackClick?.invoke(feedback) },
+                            onClick = feedbackRowClick(onFeedbackClick, feedback),
                             onVoteChange = { response ->
                                 state.updateFeedback(
                                     feedback.withVote(response.hasVoted, response.voteCount)
                                 )
                                 onVoteChange?.invoke(feedback, response)
                             },
-                            theme = theme
+                            theme = theme,
+                            onVoteError = onVoteError
                         )
                     }
                 }
@@ -129,18 +132,23 @@ fun FeedbackList(
     statusFilter: FeedbackStatus? = null,
     categoryFilter: FeedbackCategory? = null,
     onFeedbackClick: ((Feedback) -> Unit)? = null,
-    theme: FeedbackKitTheme = LocalFeedbackKitTheme.current
+    theme: FeedbackKitTheme = LocalFeedbackKitTheme.current,
+    onVoteError: ((FeedbackKitError) -> Unit)? = null
 ) {
     val state = rememberFeedbackListState(
         initialStatusFilter = statusFilter,
         initialCategoryFilter = categoryFilter
     )
+    LaunchedEffect(statusFilter, categoryFilter) {
+        state.syncExternalFilters(statusFilter, categoryFilter)
+    }
 
     FeedbackList(
         modifier = modifier,
         state = state,
         onFeedbackClick = onFeedbackClick,
-        theme = theme
+        theme = theme,
+        onVoteError = onVoteError
     )
 }
 
@@ -205,7 +213,7 @@ private fun DefaultErrorContent(
             )
             Spacer(modifier = Modifier.height(theme.spacing.dp))
             Text(
-                text = error.userMessage,
+                text = error.localizedUserMessage(),
                 color = theme.secondaryTextColor,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center

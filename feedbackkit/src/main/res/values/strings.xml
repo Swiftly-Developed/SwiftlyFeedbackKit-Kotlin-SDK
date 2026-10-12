@@ -56,4 +56,13 @@
     <!-- Errors -->
     <string name="feedbackkit_error_title">Error</string>
     <string name="feedbackkit_error_generic">An error occurred</string>
+    <string name="feedbackkit_error_auth">Authentication failed. Please check your API key.</string>
+    <string name="feedbackkit_error_payment">This feature requires a subscription upgrade.</string>
+    <string name="feedbackkit_error_forbidden">You don\'t have permission to perform this action.</string>
+    <string name="feedbackkit_error_not_found">The requested item was not found.</string>
+    <string name="feedbackkit_error_timeout">Request timed out. Please try again.</string>
+    <string name="feedbackkit_error_network">Network error. Please check your connection.</string>
+    <string name="feedbackkit_error_server">Server error. Please try again later.</string>
+    <string name="feedbackkit_error_rate_limit">Too many requests. Please try again in a moment.</string>
+    <string name="feedbackkit_error_unexpected">An unexpected error occurred.</string>
 </resources>

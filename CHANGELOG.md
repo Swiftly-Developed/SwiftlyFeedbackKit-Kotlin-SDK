@@ -5,6 +5,126 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Documentation
+
+- Added [docs/getting-started.md](docs/getting-started.md). It matches the 1.2.1 API and states what Maven Central 1.0.1 and the public GitHub mirror do not include.
+- Corrected the anonymous-id notes. A blank `userId` clears SharedPreferences only. `configure()` does not mint a new id while an instance already exists. `logout()` clears both stores. The next process start generates `local_<uuid>` when both stores are empty.
+- Noted that `users.getCurrentUser()` calls `GET /users/{id}`, which the server does not register.
+- Noted that `VoteButton` does not pass `email` or `notifyStatusChange`, and that `FeedbackList` has no pull gesture. The 1.0.0 notes below called the list a pull-to-refresh view. The composable exposes `refresh()` and `isRefreshing` for a gesture the host supplies.
+- Website docs, the Android blog guide, and the Kotlin rows of the Play Data safety notes now use the same vote, register, and event signatures as this tree.
+- Noted that Maven 1.0.1 `unvote` puts `user_id` in the query string, which the server does not read, so that call returns 400. 1.2.1 sends it in the DELETE body.
+
+## [1.2.1] - 2026-10-11
+
+### Fixed
+
+- **Anonymous users now have a persistent id.** `configure()` with no `userId`
+  generates `local_<uuid>` (a lowercase UUID v4, the same shape Flutter stores
+  and the same `local_` prefix Swift uses) and writes it to SharedPreferences
+  in private mode under `feedbackkit_user_id`. The next `configure()` reuses
+  that value. An id passed to `configure`, or assigned to `userId`, replaces
+  it and is what gets stored. A blank assignment clears it and does not
+  generate a replacement until the next `configure()` after the store is
+  empty. `feedback.list`, `feedback.create`, `votes.vote`, `votes.unvote`,
+  and `comments.create` send that id. SharedPreferences is the source of
+  truth after the first `configure()`.
+- **An id an older build saved in DataStore is kept.** When SharedPreferences
+  has no id and the host did not pass one, `configure()` reads DataStore
+  (`user_id`), copies that id into SharedPreferences, and uses it. A new
+  `local_<uuid>` is generated only when both stores are empty. An explicit
+  id, or one already in SharedPreferences, still wins, and DataStore is not
+  read in those cases. A blank DataStore value is treated as absent.
+- `votes.vote` serialized the status-change opt-in as `notifyOnStatusChange`,
+  which the server does not bind. The wire key is now `notify_status_change`,
+  and `vote` takes an optional `email`. Pass `notifyStatusChange` for the new
+  name; `notifyOnStatusChange` still compiles.
+- `users.register` sent `email`, `name`, `external_id`, and `metadata`, and
+  never `user_id` or `mrr`. The body is now `user_id` plus an optional `mrr`.
+  The old arguments remain, deprecated, and are not sent.
+
+## [1.2.0] - 2026-08-25
+
+> ⚠️ **Release precondition — read before upgrading.** This version's headline feature is the
+> metrics read API, and the metrics endpoints are **not yet deployed to every environment**.
+> Measured 2026-08-25: the development API serves them; the **testflight and production APIs
+> answer `404`** to `/api/v1/metrics/summary` while their `/health` answers `200`, so the routes
+> are genuinely absent rather than the service being down. Until that deploy lands, a metrics call
+> against production fails. Every other change in this release is unaffected.
+
+### Changed
+
+- Documented metrics windows are Free 30 days, Pro 90 days and Team 365 days. The client still reads `retentionWindowDays` from the response and does not hardcode them.
+
+### Added
+
+- **Metrics API** — `FeedbackKit.shared.metrics` with four read operations: `summary`,
+  `timeseries`, `breakdown` and `events`. All four use the API key, which identifies the
+  project, so there is no project parameter to pass.
+- Metrics models: `MetricSummary`, `MetricSeries`, `MetricSeriesPoint`, `MetricBreakdown`,
+  `MetricBreakdownItem`, `MetricEventList`, `MetricEventRow`, `MetricsMeta` and
+  `MetricsPaginationMeta`, plus the four closed vocabularies `MetricMeasure`,
+  `MetricDimension`, `MetricGranularity` and `MetricEventScope`.
+- Optional-returning measure accessors — `summary.measure(MetricMeasure.EVENT_COUNT)` returns
+  `Double?`, because a breakdown's overflow row legitimately omits `unique_event_users`.
+- `PredefinedEventNames` — the three event names FeedbackKit itself defines
+  (`feedback_list`, `feedback_detail`, `submit_feedback`), previously spelled by hand at
+  every call site. The match is exact and case-sensitive, and it decides what a Free-tier
+  metrics read can count.
+- `FeedbackKitError.RateLimitError` for **429**, with `isRecoverable == true`. The metrics
+  family is capped at 60 requests per 60 seconds; the SDK deliberately does not retry.
+- `FeedbackKitError.fromStatusCode` accepts optional `code` and `field` arguments. Existing
+  call sites compile unchanged.
+
+### Fixed
+
+Wire-contract bugs present in every published artifact (**1.0.0** and **1.0.1**). 1.0.1's sources still require `VoteResponse.success`, which the server has never sent.
+
+- **Vote and unvote responses decode.** The server body is `{feedback_id, vote_count, has_voted}`. Requiring `success` threw after the vote had already been stored, and the button rolled the count back.
+- **Unvote sends `user_id` in the JSON body.** The server reads `CreateVoteDTO` from the DELETE body. A query parameter never reached it, so unvote returned 400.
+- **Vote requests send `user_id` and the mailing-list keys in snake_case.** The status-change opt-in is `notify_status_change`, noted under 1.2.1.
+- **Tracked events send `event_name` and decode `{id, event_name, user_id, properties, created_at}`.** Requiring `success` / `event_id` threw after the event was stored.
+- **Create-feedback sends `user_email`, `subscribe_to_mailing_list`, and `mailing_list_email_types`.** The previous camelCase keys were ignored, so the email and the mailing-list opt-in were dropped.
+- **An unknown feedback `status` or `category` drops that row** instead of failing the whole list. A row that is missing a required field still fails the decode. `testflight` was already a known status.
+- **`SdkUser` reads `user_id`, `mrr`, `first_seen_at`, and `last_seen_at`.** The register request sends `user_id` and an optional `mrr`, noted under 1.2.1.
+- **HTTP 422 keeps its status code** on `UnknownError`. **429** copies a delta-seconds `Retry-After` onto `RateLimitError`. An HTTP-date `Retry-After` is left unset.
+- **`FeedbackKitConfig` rejects a blank API key** at construction, matching the configure DSL.
+- **Feedback list filters reload when they change.** A newer load no longer records the cancelled request as an error or clears the newer request's loading flag.
+- **A feedback card with no click handler is not a button.** Vote failures are reported through `onError` and an accessibility error, instead of reverting with no signal. Comment loading and submit ignore cancellation the same way.
+- **Compose error text uses the 11 locale catalogs.** Validation and conflict messages still show the server's own text. `userMessage` remains the English wording for non-Compose callers.
+
+Three defects in error reporting that affected **every** operation, not only the new ones:
+
+- **The server's explanation never reached the app.** A body of the shared middleware form
+  (`401`, `403`, `404`, `429`, `500`) was read as a primitive, so the `error` flag won the
+  lookup chain and every such failure reported the flag's own rendering instead of the
+  server's `reason`. An expired API key reported a four-letter string.
+- **A typed error envelope was discarded silently.** Reading it raised inside a swallowing
+  `catch`, so the code, the message and the offending field were all thrown away and the
+  transport's status text was reported instead. Both shapes are now decoded, branching on
+  the JSON type of `error` rather than on the status code — a 403 arrives in both shapes.
+- **429 had no arm** and fell into `UnknownError` with a null `statusCode`.
+
+The message text on existing errors therefore changes, from a placeholder to the server's
+own words. No behaviour depends on the old strings.
+
+- **Debug logging no longer prints a full URL or a response body.** With `debug` on, the
+  client logs the method, the path, and query *names* with their values replaced. Customer
+  event names travel in `event_name` and in response bodies, so neither is written out.
+  A cancelled request is rethrown instead of being wrapped as a `FeedbackKitError`.
+
+### Notes
+
+- Nothing in 1.2.0 or 1.2.1 is published. Maven Central's latest artifact is still 1.0.1. `VERSION_NAME` in this tree is 1.2.1. 1.2.0 stays the unpublished metrics release. 1.2.1 is the vote and register wire cut dated above.
+- No new dependency, and no change to the shared JSON configuration.
+
+## [1.1.1] - 2026-04-24
+
+### Changed
+
+- Version alignment with Swift SDK 1.1.1 hotfix (Xcode 26 / Swift 6.2 compatibility). No functional changes to this SDK.
+
 ## [1.1.0] - 2026-04-15
 
 ### Added

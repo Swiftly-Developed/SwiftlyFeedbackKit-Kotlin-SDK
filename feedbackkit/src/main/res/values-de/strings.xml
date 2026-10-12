@@ -39,4 +39,13 @@
     <string name="feedbackkit_category_other">Sonstiges</string>
     <string name="feedbackkit_error_title">Fehler</string>
     <string name="feedbackkit_error_generic">Ein Fehler ist aufgetreten</string>
+    <string name="feedbackkit_error_auth">Authentifizierung fehlgeschlagen. Bitte prüfe deinen API-Schlüssel.</string>
+    <string name="feedbackkit_error_payment">Diese Funktion erfordert ein höheres Abonnement.</string>
+    <string name="feedbackkit_error_forbidden">Du hast keine Berechtigung für diese Aktion.</string>
+    <string name="feedbackkit_error_not_found">Der angeforderte Eintrag wurde nicht gefunden.</string>
+    <string name="feedbackkit_error_timeout">Zeitüberschreitung der Anfrage. Bitte versuche es erneut.</string>
+    <string name="feedbackkit_error_network">Netzwerkfehler. Bitte prüfe deine Verbindung.</string>
+    <string name="feedbackkit_error_server">Serverfehler. Bitte versuche es später erneut.</string>
+    <string name="feedbackkit_error_rate_limit">Zu viele Anfragen. Bitte versuche es gleich noch einmal.</string>
+    <string name="feedbackkit_error_unexpected">Ein unerwarteter Fehler ist aufgetreten.</string>
 </resources>

@@ -4,6 +4,7 @@ import com.swiftlydeveloped.feedbackkit.http.FeedbackKitHttpClient
 import com.swiftlydeveloped.feedbackkit.models.CreateFeedbackRequest
 import com.swiftlydeveloped.feedbackkit.models.Feedback
 import com.swiftlydeveloped.feedbackkit.models.ListFeedbackOptions
+import com.swiftlydeveloped.feedbackkit.models.decodeFeedbackList
 import kotlinx.serialization.encodeToString
 
 /**
@@ -28,7 +29,10 @@ class FeedbackApi internal constructor(
             endpoint = "feedbacks",
             queryParams = queryParams
         ) { body ->
-            http.jsonSerializer.decodeFromString<List<Feedback>>(body)
+            decodeFeedbackList(
+                http.jsonSerializer,
+                http.jsonSerializer.parseToJsonElement(body)
+            )
         }
     }
 

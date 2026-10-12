@@ -9,11 +9,10 @@ import com.swiftlydeveloped.feedbackkit.models.Feedback
 import com.swiftlydeveloped.feedbackkit.models.FeedbackCategory
 import com.swiftlydeveloped.feedbackkit.models.FeedbackStatus
 import com.swiftlydeveloped.feedbackkit.models.ListFeedbackOptions
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * State holder for feedback list with loading, error, and refresh states.
@@ -21,7 +20,10 @@ import kotlinx.coroutines.withContext
 class FeedbackListState(
     private val scope: CoroutineScope,
     initialStatusFilter: FeedbackStatus? = null,
-    initialCategoryFilter: FeedbackCategory? = null
+    initialCategoryFilter: FeedbackCategory? = null,
+    private val loadItems: suspend (ListFeedbackOptions) -> List<Feedback> = { options ->
+        FeedbackKit.shared.feedback.list(options)
+    }
 ) {
     /**
      * List of feedback items.
@@ -60,6 +62,7 @@ class FeedbackListState(
         private set
 
     private var loadJob: Job? = null
+    private var requestGeneration = 0
 
     /**
      * Load feedback items with optional filters.
@@ -68,9 +71,38 @@ class FeedbackListState(
         status: FeedbackStatus? = statusFilter,
         category: FeedbackCategory? = categoryFilter
     ) {
+        beginRequest(refreshing = false, status = status, category = category)
+    }
+
+    /**
+     * Refresh the feedback list (pull-to-refresh).
+     */
+    fun refresh() {
+        beginRequest(refreshing = true, status = statusFilter, category = categoryFilter)
+    }
+
+    /**
+     * Reload when a parent passes new filters. An unchanged pair does not start
+     * another request, so the first composition does not fetch twice.
+     */
+    fun syncExternalFilters(status: FeedbackStatus?, category: FeedbackCategory?) {
+        if (status == statusFilter && category == categoryFilter) return
+        load(status = status, category = category)
+    }
+
+    private fun beginRequest(
+        refreshing: Boolean,
+        status: FeedbackStatus?,
+        category: FeedbackCategory?
+    ) {
+        val generation = ++requestGeneration
         loadJob?.cancel()
         loadJob = scope.launch {
-            isLoading = true
+            if (refreshing) {
+                isRefreshing = true
+            } else {
+                isLoading = true
+            }
             error = null
 
             try {
@@ -78,43 +110,20 @@ class FeedbackListState(
                     status = status,
                     category = category
                 )
-
-                feedbackItems = withContext(Dispatchers.IO) {
-                    FeedbackKit.shared.feedback.list(options)
-                }
-
+                feedbackItems = loadItems(options)
                 statusFilter = status
                 categoryFilter = category
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                error = FeedbackKitError.fromException(e)
-            } finally {
-                isLoading = false
-            }
-        }
-    }
-
-    /**
-     * Refresh the feedback list (pull-to-refresh).
-     */
-    fun refresh() {
-        loadJob?.cancel()
-        loadJob = scope.launch {
-            isRefreshing = true
-            error = null
-
-            try {
-                val options = ListFeedbackOptions(
-                    status = statusFilter,
-                    category = categoryFilter
-                )
-
-                feedbackItems = withContext(Dispatchers.IO) {
-                    FeedbackKit.shared.feedback.list(options)
+                if (requestGeneration == generation) {
+                    error = FeedbackKitError.fromException(e)
                 }
-            } catch (e: Exception) {
-                error = FeedbackKitError.fromException(e)
             } finally {
-                isRefreshing = false
+                if (requestGeneration == generation) {
+                    isLoading = false
+                    isRefreshing = false
+                }
             }
         }
     }
