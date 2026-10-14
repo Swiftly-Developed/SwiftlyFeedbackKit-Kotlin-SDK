@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-10-14
+
+### Fixed
+
+- The library compiles again: the `R` imports pointed at `com.swiftlydeveloped.feedbackkit.R`, but the module's namespace is `com.getfeedbackkit.feedbackkit`.
+- Comment lists no longer throw `MissingFieldException`: the server never sends `feedback_id` on comments, so `Comment.feedbackId` is now `String?` (default `null`). Code that assigns it to a non-null `String` needs a null check.
+- The admin badge on comments now renders: `Comment.isOfficial` reads the server's `is_admin` key (it read `is_official`, which the server never sends).
+- `Feedback.email` is now populated: it reads the server's `user_email` key (it read `email`, which the server never sends).
+- `./gradlew` works on a fresh clone: `gradle/wrapper/gradle-wrapper.jar` is now committed instead of git-ignored.
+
+### Added
+
+- Cross-SDK parity tests against server-generated wire corpora, plus comment-model and status-partition test suites.
+
 ## [1.1.1] - 2026-04-24
 
 ### Changed
