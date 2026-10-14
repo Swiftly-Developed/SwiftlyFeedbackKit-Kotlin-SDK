@@ -20,7 +20,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import kotlinx.coroutines.CancellationException
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -78,8 +79,12 @@ fun FeedbackDetailView(
 
     // Load comments
     LaunchedEffect(feedback.id) {
+        isLoadingComments = true
+        commentsError = null
         try {
             comments = FeedbackKit.shared.comments.list(feedback.id)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             commentsError = FeedbackKitError.fromException(e)
         } finally {
@@ -112,7 +117,7 @@ fun FeedbackDetailView(
 
             // Divider
             item {
-                Divider(color = theme.borderColor)
+                HorizontalDivider(color = theme.borderColor)
             }
 
             // Comments section header

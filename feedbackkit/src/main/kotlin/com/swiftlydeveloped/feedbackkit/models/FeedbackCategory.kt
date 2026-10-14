@@ -35,6 +35,19 @@ enum class FeedbackCategory {
         }
 
     /**
+     * String resource ID for the name of the whole set ("Bug Reports"), used by the
+     * category filter and the "Filtered by" row. A display name, not a count-based plural.
+     */
+    @get:StringRes
+    val pluralDisplayNameRes: Int
+        get() = when (this) {
+            FEATURE_REQUEST -> R.string.feedbackkit_category_plural_feature_request
+            BUG_REPORT -> R.string.feedbackkit_category_plural_bug_report
+            IMPROVEMENT -> R.string.feedbackkit_category_plural_improvement
+            OTHER -> R.string.feedbackkit_category_plural_other
+        }
+
+    /**
      * Human-readable display name for the category (English fallback).
      */
     val displayName: String

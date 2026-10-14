@@ -4,4 +4,5 @@ plugins {
     id("com.android.library") version "8.2.2" apply false
     id("org.jetbrains.kotlin.android") version "1.9.22" apply false
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22" apply false
+    id("io.github.takahirom.roborazzi") version "1.26.0" apply false
 }

@@ -99,11 +99,12 @@ class FeedbackModelTest {
 
     @Test
     fun `ListFeedbackOptions toQueryParams includes only non-null values`() {
+        // REL-05: the SDK always opts in to the page envelope with paged=1.
         val emptyOptions = ListFeedbackOptions()
-        assertTrue(emptyOptions.toQueryParams().isEmpty())
+        assertEquals(mapOf("paged" to "1"), emptyOptions.toQueryParams())
 
         val statusOnly = ListFeedbackOptions(status = FeedbackStatus.PENDING)
-        assertEquals(mapOf("status" to "pending"), statusOnly.toQueryParams())
+        assertEquals(mapOf("paged" to "1", "status" to "pending"), statusOnly.toQueryParams())
 
         val fullOptions = ListFeedbackOptions(
             status = FeedbackStatus.APPROVED,
@@ -112,6 +113,7 @@ class FeedbackModelTest {
             perPage = 20
         )
         val params = fullOptions.toQueryParams()
+        assertEquals("1", params["paged"])
         assertEquals("approved", params["status"])
         assertEquals("bug_report", params["category"])
         assertEquals("2", params["page"])

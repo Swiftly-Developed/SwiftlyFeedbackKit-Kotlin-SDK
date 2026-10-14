@@ -29,6 +29,10 @@ data class FeedbackKitConfig(
      */
     val debug: Boolean = false
 ) {
+    init {
+        require(apiKey.isNotBlank()) { "API key is required" }
+    }
+
     /**
      * The full API URL (with /api/v1 suffix).
      */

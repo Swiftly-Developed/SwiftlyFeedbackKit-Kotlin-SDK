@@ -67,10 +67,13 @@ data class CreateFeedbackRequest(
     val title: String,
     val description: String,
     val category: FeedbackCategory,
+    @SerialName("user_email")
     val email: String? = null,
     @SerialName("user_id")
     val userId: String? = null,
+    @SerialName("subscribe_to_mailing_list")
     val subscribeToMailingList: Boolean? = null,
+    @SerialName("mailing_list_email_types")
     val mailingListEmailTypes: List<String>? = null
 )
 
@@ -87,6 +90,7 @@ data class ListFeedbackOptions(
      * Convert to query parameters map.
      */
     fun toQueryParams(): Map<String, String> = buildMap {
+        put("paged", "1")
         status?.let { put("status", it.jsonValue) }
         category?.let { put("category", it.jsonValue) }
         page?.let { put("page", it.toString()) }

@@ -39,4 +39,63 @@
     <string name="feedbackkit_category_other">أخرى</string>
     <string name="feedbackkit_error_title">خطأ</string>
     <string name="feedbackkit_error_generic">حدث خطأ</string>
+    <string name="feedbackkit_error_auth">فشلت المصادقة. يُرجى التحقق من مفتاح واجهة البرمجة.</string>
+    <string name="feedbackkit_error_payment">تتطلب هذه الميزة ترقية الاشتراك.</string>
+    <string name="feedbackkit_error_forbidden">ليس لديك إذن لتنفيذ هذا الإجراء.</string>
+    <string name="feedbackkit_error_not_found">لم يتم العثور على العنصر المطلوب.</string>
+    <string name="feedbackkit_error_timeout">انتهت مهلة الطلب. يُرجى المحاولة مرة أخرى.</string>
+    <string name="feedbackkit_error_network">خطأ في الشبكة. يُرجى التحقق من الاتصال.</string>
+    <string name="feedbackkit_error_server">خطأ في الخادم. يُرجى المحاولة لاحقًا.</string>
+    <string name="feedbackkit_error_rate_limit">طلبات كثيرة جدًا. يُرجى المحاولة بعد قليل.</string>
+    <string name="feedbackkit_error_unexpected">حدث خطأ غير متوقع.</string>
+
+    <!-- Showcase list, sort and filter (FEEDBACK01) -->
+    <string name="feedbackkit_sort_and_filter">الترتيب والتصفية</string>
+    <string name="feedbackkit_sort_by">ترتيب حسب</string>
+    <string name="feedbackkit_sort_votes">الأصوات</string>
+    <string name="feedbackkit_sort_newest">الأحدث</string>
+    <string name="feedbackkit_sort_oldest">الأقدم</string>
+    <string name="feedbackkit_sort_comments">التعليقات</string>
+    <string name="feedbackkit_filter_status">الحالة</string>
+    <string name="feedbackkit_filter_category">الفئة</string>
+    <string name="feedbackkit_filter_all_statuses">كل الحالات</string>
+    <string name="feedbackkit_filter_all_categories">كل الفئات</string>
+    <string name="feedbackkit_filter_clear_all">مسح عوامل التصفية</string>
+    <string name="feedbackkit_category_plural_feature_request">طلبات الميزات</string>
+    <string name="feedbackkit_category_plural_bug_report">تقارير الأخطاء</string>
+    <string name="feedbackkit_category_plural_improvement">التحسينات</string>
+    <string name="feedbackkit_category_plural_other">أخرى</string>
+    <string name="feedbackkit_filtered_by">تمت التصفية حسب %1$s</string>
+    <string name="feedbackkit_filter_names_join">%1$s ·\u00A0%2$s</string>
+    <string name="feedbackkit_filter_names_join_spoken">%1$s، %2$s</string>
+    <string name="feedbackkit_filter_clear">مسح</string>
+    <string name="feedbackkit_filtered_empty">لا توجد طلبات مطابقة</string>
+    <string name="feedbackkit_filtered_empty_description">لا توجد ملاحظات تطابق عوامل التصفية هذه.</string>
+    <string name="feedbackkit_search_placeholder">البحث في الملاحظات</string>
+    <string name="feedbackkit_search_clear">مسح البحث</string>
+    <string name="feedbackkit_search_empty">لا توجد نتائج</string>
+    <string name="feedbackkit_search_empty_description">لا توجد ملاحظات تطابق بحثك.</string>
+    <string name="feedbackkit_vote_state_voted">تم التصويت</string>
+    <string name="feedbackkit_vote_state_not_voted">لم يتم التصويت</string>
+    <string name="feedbackkit_vote_closed">التصويت مغلق</string>
+    <string name="feedbackkit_view_details">عرض التفاصيل</string>
+    <string name="feedbackkit_list_loading">جارٍ تحميل الملاحظات</string>
+    <string name="feedbackkit_sorted_by">مرتبة حسب %1$s</string>
+    <string name="feedbackkit_list_refreshing">جارٍ تحديث الملاحظات</string>
+    <plurals name="feedbackkit_vote_count">
+        <item quantity="zero">%1$s صوت</item>
+        <item quantity="one">صوت واحد</item>
+        <item quantity="two">صوتان</item>
+        <item quantity="few">%1$s أصوات</item>
+        <item quantity="many">%1$s صوتًا</item>
+        <item quantity="other">%1$s صوت</item>
+    </plurals>
+    <plurals name="feedbackkit_comment_count">
+        <item quantity="zero">%1$s تعليق</item>
+        <item quantity="one">تعليق واحد</item>
+        <item quantity="two">تعليقان</item>
+        <item quantity="few">%1$s تعليقات</item>
+        <item quantity="many">%1$s تعليقًا</item>
+        <item quantity="other">%1$s تعليق</item>
+    </plurals>
 </resources>

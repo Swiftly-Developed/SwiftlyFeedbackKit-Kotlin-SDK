@@ -1,7 +1,10 @@
 package com.swiftlydeveloped.feedbackkit
 
 import androidx.compose.ui.graphics.Color
+import com.swiftlydeveloped.feedbackkit.api.VotesApi
 import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
+import com.swiftlydeveloped.feedbackkit.api.VotesApi.UnvoteRequest
+import com.swiftlydeveloped.feedbackkit.api.VotesApi.VoteRequest
 import com.swiftlydeveloped.feedbackkit.models.CreateFeedbackRequest
 import com.swiftlydeveloped.feedbackkit.models.Feedback
 import com.swiftlydeveloped.feedbackkit.models.FeedbackCategory
@@ -9,14 +12,20 @@ import com.swiftlydeveloped.feedbackkit.models.FeedbackStatus
 import com.swiftlydeveloped.feedbackkit.models.RegisterUserRequest
 import com.swiftlydeveloped.feedbackkit.models.SdkUser
 import com.swiftlydeveloped.feedbackkit.models.TrackEventResponse
+import com.swiftlydeveloped.feedbackkit.models.TrackedEvent
 import com.swiftlydeveloped.feedbackkit.models.VoteResponse
+import com.swiftlydeveloped.feedbackkit.models.decodeFeedbackList
 import com.swiftlydeveloped.feedbackkit.theme.FeedbackKitTheme
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MissingFieldException
+import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.double
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
@@ -76,38 +85,45 @@ class SdkParityTest {
     // MARK: -07 · list tolerance
 
     /**
-     * ⚠️ RECORDED AS SHIPPED — one unknown status token poisons the whole list.
-     *
-     * The tolerance corpus is four feedback rows, one of which (`quantum_launch`, index 2)
-     * carries a status token this SDK has never heard of — the exact shape of a server that
-     * shipped a new status before the client updated. Decoding the array as
-     * `List<Feedback>` THROWS, so the customer consequence is an **empty feedback list on
-     * every Android install** the moment the server adds a status, not a list missing one
-     * row. A tolerant per-element decode would have to be product code; fixing it must flip
-     * this test deliberately.
+     * One unknown status token is dropped. The other three rows, including `testflight`,
+     * stay. A raw `List<Feedback>` decode still throws; the product path is
+     * [decodeFeedbackList], which [com.swiftlydeveloped.feedbackkit.api.FeedbackApi.list] uses.
      */
     @Test
-    fun `one unknown status token poisons the whole four-row list decode`() {
+    fun `one unknown status token is dropped and the other three rows remain`() {
         val rows = corpusArray("feedback-tolerance-corpus.json")
 
-        // Non-vacuity: the poison row really is there, really is unknown to this SDK.
         assertEquals(4, rows.size)
         val poisonToken = rows[2].jsonObject["status"]!!.jsonPrimitive.content
         assertEquals("quantum_launch", poisonToken)
         assertNull(FeedbackStatus.fromJsonValue(poisonToken))
 
-        var threw = false
-        try {
-            json.decodeFromJsonElement<List<Feedback>>(rows)
-        } catch (expected: SerializationException) {
-            threw = true
-        }
-        assertTrue(
-            "List<Feedback> decode of the tolerance corpus no longer throws — either the " +
-                "product grew tolerance (flip this case deliberately) or the corpus lost " +
-                "its unknown-status row.",
-            threw
+        val items = decodeFeedbackList(json, rows)
+
+        assertEquals(3, items.size)
+        assertEquals(
+            listOf("Tolerance row one", "Tolerance row two", "Tolerance row four"),
+            items.map { it.title }
         )
+        assertEquals(
+            listOf(FeedbackStatus.PENDING, FeedbackStatus.TESTFLIGHT, FeedbackStatus.COMPLETED),
+            items.map { it.status }
+        )
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    @Test
+    fun `a known row missing a required field still fails the list decode`() {
+        val rows = corpusArray("feedback-tolerance-corpus.json")
+        val brokenRow = JsonObject(rows[0].jsonObject.filterKeys { it != "title" })
+        val broken = JsonArray(listOf(brokenRow))
+
+        try {
+            decodeFeedbackList(json, broken)
+            fail("A row missing title was decoded or dropped")
+        } catch (error: SerializationException) {
+            assertTrue(error is MissingFieldException)
+        }
     }
 
     /**
@@ -178,90 +194,56 @@ class SdkParityTest {
     // MARK: -21 · required-field census
 
     /**
-     * ⚠️ RECORDED AS SHIPPED — finding **F2**, the headline: every vote and unvote on
-     * Android throws today.
-     *
-     * `VoteResponse.success` is required and default-less, and the server has NEVER sent a
-     * `success` key on the vote payload — the corpus shows the wire shape is exactly
-     * `{feedback_id, vote_count, has_voted}`. So the HTTP call succeeds, the vote is
-     * recorded server-side, and the SDK then throws `MissingFieldException` decoding the
-     * 2xx body: the user's vote "fails" on screen while having actually landed. Fixing
-     * `VoteResponse` must flip this case deliberately.
+     * The server vote payload is `{feedback_id, vote_count, has_voted}` with no `success`.
+     * Published 1.0.1 required `success` and threw after the vote had already landed.
      */
     @Test
-    fun `every vote response decode throws MissingFieldException on success`() {
+    fun `vote response decodes the server payload without a success key`() {
         val row = corpusArray("vote-wire-corpus.json")[0]
 
-        // Non-vacuity: the server's row carries exactly the three keys, no "success",
-        // and demonstrably expresses a real vote state.
         assertEquals(setOf("feedback_id", "vote_count", "has_voted"), row.jsonObject.keys)
-        assertTrue(row.jsonObject["has_voted"]!!.jsonPrimitive.content.toBoolean())
-        assertEquals("8", row.jsonObject["vote_count"]!!.jsonPrimitive.content)
+        assertFalse(row.jsonObject.containsKey("success"))
 
-        try {
-            json.decodeFromJsonElement<VoteResponse>(row)
-            fail(
-                "VoteResponse decoded the server's vote payload — the shipped defect " +
-                    "(required, default-less `success`) is gone; flip this RECORDED case " +
-                    "into the fixed-behaviour assertion deliberately."
-            )
-        } catch (error: SerializationException) {
-            assertEquals("MissingFieldException", error::class.simpleName)
-            assertTrue(
-                "The decode failure no longer names `success`: ${error.message}",
-                error.message.orEmpty().contains("success")
-            )
-        }
+        val vote = json.decodeFromJsonElement<VoteResponse>(row)
+
+        assertEquals("77777777-7777-4777-8777-777777777777", vote.feedbackId)
+        assertEquals(8, vote.voteCount)
+        assertTrue(vote.hasVoted)
+        assertTrue(vote.success)
     }
 
     /**
-     * ⚠️ RECORDED AS SHIPPED — F2's twin: every tracked event on Android throws today.
-     *
-     * `TrackEventResponse.success` is required and default-less; the event payload the
-     * server actually sends is `{id, event_name, user_id, properties?, created_at}` with no
-     * `success` key. Same customer shape as the vote arm: the event IS recorded, the SDK
-     * call throws anyway.
+     * The server event payload is `{id, event_name, user_id, properties?, created_at}`
+     * with no `success` and no `event_id`. Published 1.0.1 threw after the event was stored.
      */
     @Test
-    fun `every track-event response decode throws MissingFieldException on success`() {
+    fun `track-event response decodes the server payload without a success key`() {
         val row = corpusArray("event-wire-corpus.json")[0]
 
-        // Non-vacuity: a real event row, no "success" anywhere.
         assertEquals("feedback_list", row.jsonObject["event_name"]!!.jsonPrimitive.content)
         assertFalse(row.jsonObject.containsKey("success"))
 
-        try {
-            json.decodeFromJsonElement<TrackEventResponse>(row)
-            fail(
-                "TrackEventResponse decoded the server's event payload — the shipped " +
-                    "defect (required, default-less `success`) is gone; flip this " +
-                    "RECORDED case deliberately."
-            )
-        } catch (error: SerializationException) {
-            assertEquals("MissingFieldException", error::class.simpleName)
-            assertTrue(
-                "The decode failure no longer names `success`: ${error.message}",
-                error.message.orEmpty().contains("success")
-            )
-        }
+        val event = json.decodeFromJsonElement<TrackEventResponse>(row)
+
+        assertEquals("BBBBBBBB-BBBB-4BBB-8BBB-BBBBBBBBBBBB", event.id)
+        assertEquals("feedback_list", event.eventName)
+        assertEquals("fixture-end-user", event.userId)
+        assertEquals("fixture-tab", event.properties?.get("source"))
+        assertEquals("2023-11-15T00:13:20Z", event.createdAt)
+        assertTrue(event.success)
+        assertNull(event.eventId)
     }
 
     /**
-     * ⚠️ RECORDED AS SHIPPED — finding **F3**: `SdkUser` is a model of phantoms.
-     *
      * The server's SDK-user payload is `{id, user_id, mrr, first_seen_at, last_seen_at}`.
-     * Of the six properties the Kotlin model declares, only `id` binds; `email`, `name`,
-     * `externalId`, `metadata` and `createdAt` read keys the server never sends and are
-     * null on every payload, while the keys the server DOES send (`user_id`, `mrr`,
-     * `first_seen_at`, `last_seen_at`) have no property reading them and vanish under
-     * `ignoreUnknownKeys`. The decode "succeeds" — into an object that knows nothing.
+     * Those keys bind. `email`, `name`, `externalId`, `metadata` and `createdAt` stay
+     * null because the server does not send them. The register *request* is a separate
+     * contract and is not changed here.
      */
     @Test
-    fun `SdkUser binds only id, every other declared property is a phantom`() {
+    fun `SdkUser binds the server user id, mrr, and seen timestamps`() {
         val row = corpusArray("sdk-user-wire-corpus.json")[0]
 
-        // Non-vacuity through the raw JsonObject: the wire row demonstrably carries the
-        // data the model then loses.
         assertEquals("fixture-end-user", row.jsonObject["user_id"]!!.jsonPrimitive.content)
         assertEquals(42.5, row.jsonObject["mrr"]!!.jsonPrimitive.double, 0.0)
         assertTrue(row.jsonObject.containsKey("first_seen_at"))
@@ -269,6 +251,12 @@ class SdkParityTest {
 
         val user = json.decodeFromJsonElement<SdkUser>(row)
         assertEquals("99999999-9999-4999-8999-999999999999", user.id)
+        assertEquals("fixture-end-user", user.userId)
+        assertEquals(42.5, user.mrr!!, 0.0)
+        assertEquals("2023-11-14T22:13:20Z", user.firstSeenAt)
+        assertEquals("2023-11-14T23:13:20Z", user.lastSeenAt)
+        // Profile fields the server does not send stay absent. The register request
+        // body is a separate contract and is not changed here.
         assertNull(user.email)
         assertNull(user.name)
         assertNull(user.externalId)
@@ -279,20 +267,14 @@ class SdkParityTest {
     // MARK: -22 · encode direction
 
     /**
-     * ⚠️ RECORDED AS SHIPPED — the mailing-list opt-in silently never leaves the phone.
-     *
-     * `CreateFeedbackRequest.subscribeToMailingList` / `mailingListEmailTypes` carry no
-     * `@SerialName`, so the client emits camelCase keys the server does not read; and the
-     * client emits `email` where the server's canon key is `user_email`. The server ignores
-     * unknown body keys, so the feedback IS created — minus the submitter's email and
-     * minus their mailing-list subscription, with no error anywhere. The canon below is
-     * loaded from `request-wire-corpus.json` (`create_feedback`), generated server-side.
+     * Create-feedback keys match `request-wire-corpus.json` (`create_feedback`).
+     * Published 1.0.1 emitted `email` and camelCase mailing-list keys, which the
+     * server ignores, so the item saved without the submitter's email or opt-in.
      */
     @Test
-    fun `CreateFeedbackRequest emits keys the server canon does not read`() {
+    fun `CreateFeedbackRequest emits the server create_feedback keys`() {
         val canonKeys = requestCanon()["create_feedback"]!!.jsonObject.keys
 
-        // Non-vacuity: the canon really is the server's seven-key shape.
         assertEquals(
             setOf(
                 "title", "description", "category", "user_id", "user_email",
@@ -311,46 +293,125 @@ class SdkParityTest {
                 subscribeToMailingList = true,
                 mailingListEmailTypes = listOf("status_change")
             )
-        ).jsonObject.keys
+        ).jsonObject
 
-        // The shipped emission, verbatim: camelCase mailing-list keys and bare `email`.
-        assertTrue("subscribeToMailingList" in emitted)
-        assertTrue("mailingListEmailTypes" in emitted)
-        assertTrue("email" in emitted)
+        assertEquals(canonKeys, emitted.keys)
+        assertEquals("fixture-user@example.invalid", emitted["user_email"]!!.jsonPrimitive.content)
+        assertTrue(emitted["subscribe_to_mailing_list"]!!.jsonPrimitive.boolean)
+        assertFalse(emitted.containsKey("email"))
+        assertFalse(emitted.containsKey("subscribeToMailingList"))
+    }
 
-        // The intersection failure, explicitly: none of those three is in the server's
-        // key set, so all three are silently dropped on arrival…
-        assertFalse("subscribeToMailingList" in canonKeys)
-        assertFalse("mailingListEmailTypes" in canonKeys)
-        assertFalse("email" in canonKeys)
-        // …and the keys the server WOULD read never get emitted.
-        assertFalse("subscribe_to_mailing_list" in emitted)
-        assertFalse("mailing_list_email_types" in emitted)
-        assertFalse("user_email" in emitted)
+    @Test
+    fun `TrackedEvent emits event_name, the key the server reads`() {
+        val canon = requestCanon()["track_view_event"]!!.jsonObject
+        assertEquals("feedback_list", canon["event_name"]!!.jsonPrimitive.content)
+
+        val emitted = json.encodeToJsonElement(
+            TrackedEvent(
+                name = "feedback_list",
+                properties = mapOf("source" to "fixture-tab"),
+                userId = "fixture-end-user"
+            )
+        ).jsonObject
+
+        assertEquals("feedback_list", emitted["event_name"]!!.jsonPrimitive.content)
+        assertEquals("fixture-end-user", emitted["user_id"]!!.jsonPrimitive.content)
+        assertEquals("fixture-tab", emitted["properties"]!!.jsonObject["source"]!!.jsonPrimitive.content)
+        assertFalse(emitted.containsKey("name"))
+    }
+
+    @Test
+    fun `VoteRequest emits user_id and the mailing-list keys the server reads`() {
+        val canon = requestCanon()["create_vote"]!!.jsonObject
+        assertTrue(canon.containsKey("user_id"))
+        assertTrue(canon.containsKey("subscribe_to_mailing_list"))
+
+        val emitted = json.encodeToJsonElement(
+            VoteRequest(
+                userId = "fixture-end-user",
+                subscribeToMailingList = true,
+                mailingListEmailTypes = listOf("status_change")
+            )
+        ).jsonObject
+
+        assertEquals("fixture-end-user", emitted["user_id"]!!.jsonPrimitive.content)
+        assertTrue(emitted["subscribe_to_mailing_list"]!!.jsonPrimitive.boolean)
+        assertFalse(emitted.containsKey("userId"))
+        assertFalse(emitted.containsKey("subscribeToMailingList"))
+        assertFalse(emitted.containsKey("mailingListEmailTypes"))
+    }
+
+    @Test
+    fun `UnvoteRequest is a JSON body carrying user_id`() {
+        val emitted = json.encodeToJsonElement(
+            UnvoteRequest(userId = "fixture-end-user")
+        ).jsonObject
+
+        assertEquals(setOf("user_id"), emitted.keys)
+        assertEquals("fixture-end-user", emitted["user_id"]!!.jsonPrimitive.content)
     }
 
     /**
-     * ⚠️ RECORDED AS SHIPPED — F3's encode half: `RegisterUserRequest` and the server's
-     * `register_sdk_user` canon (`{user_id, mrr}`) share **zero** keys. The model emits
-     * `{email, name, external_id, metadata}`; the server reads none of them and receives
-     * neither a user id nor an MRR from this SDK.
+     * `register_sdk_user` is `{user_id, mrr}` in `request-wire-corpus.json`, generated
+     * from `RegisterSDKUserDTO`. Deprecated email/name/externalId/metadata must not
+     * appear: the server ignores them, and a body of only those keys fails to decode.
      */
     @Test
-    fun `RegisterUserRequest shares zero keys with the register_sdk_user canon`() {
-        val canonKeys = requestCanon()["register_sdk_user"]!!.jsonObject.keys
-        assertEquals(setOf("user_id", "mrr"), canonKeys)
+    @Suppress("DEPRECATION")
+    fun `RegisterUserRequest encodes user_id and mrr and drops the ignored fields`() {
+        val canon = requestCanon()["register_sdk_user"]!!.jsonObject
+        assertEquals(setOf("user_id", "mrr"), canon.keys)
 
         val emitted = json.encodeToJsonElement(
             RegisterUserRequest(
                 email = "fixture-user@example.invalid",
                 name = "Fixture User",
                 externalId = "fixture-external",
-                metadata = mapOf("plan" to "pro")
+                metadata = mapOf("plan" to "pro"),
+                userId = "fixture-end-user",
+                mrr = 42.5
             )
-        ).jsonObject.keys
+        ).jsonObject
 
-        assertEquals(setOf("email", "name", "external_id", "metadata"), emitted)
-        assertEquals(emptySet<String>(), emitted intersect canonKeys)
+        assertEquals(canon.keys, emitted.keys)
+        assertEquals(canon["user_id"]!!.jsonPrimitive.content, emitted["user_id"]!!.jsonPrimitive.content)
+        assertEquals(canon["mrr"]!!.jsonPrimitive.double, emitted["mrr"]!!.jsonPrimitive.double, 0.0)
+        assertFalse(emitted.containsKey("email"))
+        assertFalse(emitted.containsKey("name"))
+        assertFalse(emitted.containsKey("external_id"))
+        assertFalse(emitted.containsKey("metadata"))
+    }
+
+    /**
+     * `create_vote.notify_status_change` is the wire key for `CreateVoteDTO.notifyStatusChange`.
+     * `notify_on_status_change` / `notifyOnStatusChange` do not bind that property.
+     */
+    @Test
+    fun `VoteRequest encodes notify_status_change and email from the create_vote canon`() {
+        val canon = requestCanon()["create_vote"]!!.jsonObject
+        assertEquals(true, canon["notify_status_change"]!!.jsonPrimitive.boolean)
+        assertTrue(canon.containsKey("email"))
+        assertTrue(canon.containsKey("user_id"))
+        assertFalse(canon.containsKey("notify_on_status_change"))
+        assertFalse(canon.containsKey("notifyOnStatusChange"))
+
+        val emitted = json.encodeToJsonElement(
+            VotesApi.VoteRequest(
+                userId = "fixture-end-user",
+                email = "fixture-user@example.invalid",
+                notifyOnStatusChange = true
+            )
+        ).jsonObject
+
+        assertEquals(canon["user_id"]!!.jsonPrimitive.content, emitted["user_id"]!!.jsonPrimitive.content)
+        assertEquals(canon["email"]!!.jsonPrimitive.content, emitted["email"]!!.jsonPrimitive.content)
+        assertEquals(true, emitted["notify_status_change"]!!.jsonPrimitive.boolean)
+        assertFalse(emitted.containsKey("notifyOnStatusChange"))
+        assertFalse(emitted.containsKey("notify_on_status_change"))
+        assertTrue("notify_status_change" in canon.keys)
+        assertTrue("email" in canon.keys)
+        assertTrue("user_id" in canon.keys)
     }
 
     // MARK: -18 · environment enumeration, -17 · config validation
@@ -375,19 +436,24 @@ class SdkParityTest {
     }
 
     /**
-     * `-17` ⚠️ RECORDED AS SHIPPED — an empty API key is accepted silently.
-     *
-     * `FeedbackKitConfig(apiKey = "")` neither throws nor warns; the empty string is stored
-     * and every subsequent request goes out with an empty `X-API-Key` header, surfacing
-     * only as a 401 at first network contact instead of at the construction site where the
-     * mistake was made. The remaining defaults (`timeout = 30_000L`, `debug = false`) are
-     * already pinned by `FeedbackKitConfigTest.default config uses production environment`
-     * and are not re-asserted here.
+     * An empty or blank API key is rejected at construction. Published 1.0.1 stored the
+     * empty string and sent it as `X-API-Key`, so the mistake surfaced as a 401 on the
+     * first request. The remaining defaults are pinned by `FeedbackKitConfigTest`.
      */
     @Test
-    fun `an empty api key is accepted silently`() {
-        val config = FeedbackKitConfig(apiKey = "")
-        assertEquals("", config.apiKey)
+    fun `an empty api key is rejected at construction`() {
+        try {
+            FeedbackKitConfig(apiKey = "")
+            fail("An empty API key was accepted")
+        } catch (error: IllegalArgumentException) {
+            assertTrue(error.message.orEmpty().contains("API key"))
+        }
+        try {
+            FeedbackKitConfig(apiKey = "   ")
+            fail("A blank API key was accepted")
+        } catch (error: IllegalArgumentException) {
+            assertTrue(error.message.orEmpty().contains("API key"))
+        }
     }
 
     // MARK: -20 · theme
@@ -427,24 +493,21 @@ class SdkParityTest {
     }
 
     /**
-     * ⚠️ RECORDED AS SHIPPED (`-12`'s information-loss arm) — 422 and 429 fall into
-     * `UnknownError`, whose `statusCode` is hard-coded **`null`**
-     * (`FeedbackKitError.kt:84-87`): Kotlin is the ONLY SDK of six that discards the
-     * actual status on the unknown-4xx path. Swift/Vapor carry `.serverError(422)`, JS and
-     * Flutter carry the code on the base error. An integrator branching on `statusCode`
-     * cannot tell a 422 from a 429 — or from a genuinely unknown failure — on Android.
-     * `FeedbackKitErrorTest` pins the class mapping; this pins the loss.
+     * An unknown 4xx stays `UnknownError` (no new sealed case) and keeps the real status,
+     * so a host can tell 422 from a failure that never had one. 429 stays `RateLimitError`.
      */
     @Test
-    fun `the unknown-4xx fallback discards the status code entirely`() {
+    fun `an unknown 4xx keeps its status code`() {
         val validation = FeedbackKitError.fromStatusCode(422, "Validation failed")
         val rateLimited = FeedbackKitError.fromStatusCode(429, "Too many requests")
 
         assertTrue(validation is FeedbackKitError.UnknownError)
-        assertTrue(rateLimited is FeedbackKitError.UnknownError)
-        assertNull("422 must currently be discarded — see RECORDED note", validation.statusCode)
-        assertNull("429 must currently be discarded — see RECORDED note", rateLimited.statusCode)
+        assertEquals(422, validation.statusCode)
         assertEquals("UNKNOWN", validation.code)
+
+        // The re-anchored half: no longer discarded.
+        assertTrue(rateLimited is FeedbackKitError.RateLimitError)
+        assertEquals(429, rateLimited.statusCode)
     }
 
     /**

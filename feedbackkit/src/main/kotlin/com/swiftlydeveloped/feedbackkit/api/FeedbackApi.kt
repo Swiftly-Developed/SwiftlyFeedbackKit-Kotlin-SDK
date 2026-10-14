@@ -4,6 +4,7 @@ import com.swiftlydeveloped.feedbackkit.http.FeedbackKitHttpClient
 import com.swiftlydeveloped.feedbackkit.models.CreateFeedbackRequest
 import com.swiftlydeveloped.feedbackkit.models.Feedback
 import com.swiftlydeveloped.feedbackkit.models.ListFeedbackOptions
+import com.swiftlydeveloped.feedbackkit.models.decodeFeedbackPage
 import kotlinx.serialization.encodeToString
 
 /**
@@ -19,18 +20,45 @@ class FeedbackApi internal constructor(
      * @return List of feedback items.
      */
     suspend fun list(options: ListFeedbackOptions = ListFeedbackOptions()): List<Feedback> {
-        val queryParams = options.toQueryParams().toMutableMap()
-
-        // Add user ID for hasVoted calculation
-        http.userId?.let { queryParams["user_id"] = it }
-
-        return http.get(
-            endpoint = "feedbacks",
-            queryParams = queryParams
-        ) { body ->
-            http.jsonSerializer.decodeFromString<List<Feedback>>(body)
+        val first = fetch(options)
+        if (first.legacyArray || options.page != null) {
+            return first.items
         }
+        if (first.perPage < 1 || first.items.isEmpty() || first.page >= first.totalPages) {
+            return first.items
+        }
+        val items = first.items.toMutableList()
+        var next = first.page + 1
+        var size = first.perPage
+        var totalPages = first.totalPages
+        while (next <= totalPages && next <= 100) {
+            val more = fetch(options.copy(page = next, perPage = size))
+            if (more.legacyArray || more.items.isEmpty() || more.perPage < 1) {
+                break
+            }
+            items += more.items
+            if (more.page >= more.totalPages) {
+                break
+            }
+            next = more.page + 1
+            size = more.perPage
+            totalPages = more.totalPages
+        }
+        return items
     }
+
+    private suspend fun fetch(options: ListFeedbackOptions) =
+        http.get(
+            endpoint = "feedbacks",
+            queryParams = options.toQueryParams().toMutableMap().also { params ->
+                http.userId?.let { params["user_id"] = it }
+            }
+        ) { body ->
+            decodeFeedbackPage(
+                http.jsonSerializer,
+                http.jsonSerializer.parseToJsonElement(body)
+            )
+        }
 
     /**
      * Get a single feedback item by ID.

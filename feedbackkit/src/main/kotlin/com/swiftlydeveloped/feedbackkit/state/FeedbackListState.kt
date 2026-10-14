@@ -1,27 +1,39 @@
 package com.swiftlydeveloped.feedbackkit.state
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import com.swiftlydeveloped.feedbackkit.FeedbackKit
 import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
 import com.swiftlydeveloped.feedbackkit.models.Feedback
 import com.swiftlydeveloped.feedbackkit.models.FeedbackCategory
+import com.swiftlydeveloped.feedbackkit.models.FeedbackSortOption
 import com.swiftlydeveloped.feedbackkit.models.FeedbackStatus
 import com.swiftlydeveloped.feedbackkit.models.ListFeedbackOptions
+import com.swiftlydeveloped.feedbackkit.storage.FeedbackSortStore
+import com.swiftlydeveloped.feedbackkit.storage.SharedPreferencesSortStore
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * State holder for feedback list with loading, error, and refresh states.
+ *
+ * Two kinds of filter live here. [statusFilter] and [categoryFilter] are host scopes sent to
+ * the server and reloaded on change. [selectedStatus], [selectedCategory] and [searchQuery]
+ * are the reader's own choices from the Sort & Filter sheet and the search field. They are
+ * applied client-side over the loaded items, last for the session only, and survive a reload.
  */
 class FeedbackListState(
     private val scope: CoroutineScope,
     initialStatusFilter: FeedbackStatus? = null,
-    initialCategoryFilter: FeedbackCategory? = null
+    initialCategoryFilter: FeedbackCategory? = null,
+    private val loadItems: suspend (ListFeedbackOptions) -> List<Feedback> = { options ->
+        FeedbackKit.shared.feedback.list(options)
+    }
 ) {
     /**
      * List of feedback items.
@@ -59,7 +71,66 @@ class FeedbackListState(
     var categoryFilter by mutableStateOf(initialCategoryFilter)
         private set
 
+    /**
+     * Search text typed by the reader. Matches title and description, ignoring case and
+     * diacritics.
+     */
+    var searchQuery by mutableStateOf("")
+        private set
+
+    /**
+     * The reader's sort choice. Persisted across launches when the state comes from
+     * [rememberFeedbackListState].
+     */
+    var sortOption by mutableStateOf(FeedbackSortOption.DEFAULT)
+        private set
+
+    /**
+     * Status chosen in the Sort & Filter sheet, applied client-side. Null shows every status.
+     */
+    var selectedStatus by mutableStateOf<FeedbackStatus?>(null)
+        private set
+
+    /**
+     * Category chosen in the Sort & Filter sheet, applied client-side. Null shows every
+     * category.
+     */
+    var selectedCategory by mutableStateOf<FeedbackCategory?>(null)
+        private set
+
+    /**
+     * [feedbackItems] after search, the selected status and category, and the sort.
+     */
+    val displayedItems: List<Feedback> by derivedStateOf {
+        FeedbackListFiltering.displayedItems(
+            items = feedbackItems,
+            searchQuery = searchQuery,
+            status = selectedStatus,
+            category = selectedCategory,
+            sort = sortOption
+        )
+    }
+
+    /**
+     * True while a status or category is selected. Sort and search text do not count.
+     */
+    val isFiltered: Boolean
+        get() = selectedStatus != null || selectedCategory != null
+
+    /**
+     * True while the search field holds non-blank text.
+     */
+    val isSearching: Boolean
+        get() = searchQuery.isNotBlank()
+
+    internal var sortStore: FeedbackSortStore? = null
+        set(value) {
+            field = value
+            if (value != null) sortOption = value.read()
+        }
+
     private var loadJob: Job? = null
+    private var requestGeneration = 0
 
     /**
      * Load feedback items with optional filters.
@@ -68,9 +139,38 @@ class FeedbackListState(
         status: FeedbackStatus? = statusFilter,
         category: FeedbackCategory? = categoryFilter
     ) {
+        beginRequest(refreshing = false, status = status, category = category)
+    }
+
+    /**
+     * Refresh the feedback list (pull-to-refresh).
+     */
+    fun refresh() {
+        beginRequest(refreshing = true, status = statusFilter, category = categoryFilter)
+    }
+
+    /**
+     * Reload when a parent passes new filters. An unchanged pair does not start
+     * another request, so the first composition does not fetch twice.
+     */
+    fun syncExternalFilters(status: FeedbackStatus?, category: FeedbackCategory?) {
+        if (status == statusFilter && category == categoryFilter) return
+        load(status = status, category = category)
+    }
+
+    private fun beginRequest(
+        refreshing: Boolean,
+        status: FeedbackStatus?,
+        category: FeedbackCategory?
+    ) {
+        val generation = ++requestGeneration
         loadJob?.cancel()
         loadJob = scope.launch {
-            isLoading = true
+            if (refreshing) {
+                isRefreshing = true
+            } else {
+                isLoading = true
+            }
             error = null
 
             try {
@@ -78,43 +178,20 @@ class FeedbackListState(
                     status = status,
                     category = category
                 )
-
-                feedbackItems = withContext(Dispatchers.IO) {
-                    FeedbackKit.shared.feedback.list(options)
-                }
-
+                feedbackItems = loadItems(options)
                 statusFilter = status
                 categoryFilter = category
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                error = FeedbackKitError.fromException(e)
-            } finally {
-                isLoading = false
-            }
-        }
-    }
-
-    /**
-     * Refresh the feedback list (pull-to-refresh).
-     */
-    fun refresh() {
-        loadJob?.cancel()
-        loadJob = scope.launch {
-            isRefreshing = true
-            error = null
-
-            try {
-                val options = ListFeedbackOptions(
-                    status = statusFilter,
-                    category = categoryFilter
-                )
-
-                feedbackItems = withContext(Dispatchers.IO) {
-                    FeedbackKit.shared.feedback.list(options)
+                if (requestGeneration == generation) {
+                    error = FeedbackKitError.fromException(e)
                 }
-            } catch (e: Exception) {
-                error = FeedbackKitError.fromException(e)
             } finally {
-                isRefreshing = false
+                if (requestGeneration == generation) {
+                    isLoading = false
+                    isRefreshing = false
+                }
             }
         }
     }
@@ -169,6 +246,43 @@ class FeedbackListState(
     fun clearFilters() {
         load(status = null, category = null)
     }
+
+    /**
+     * Set the search text. Takes effect immediately; nothing is fetched.
+     */
+    fun updateSearchQuery(query: String) {
+        searchQuery = query
+    }
+
+    /**
+     * Choose a sort and persist it.
+     */
+    fun selectSort(option: FeedbackSortOption) {
+        sortOption = option
+        sortStore?.write(option)
+    }
+
+    /**
+     * Show only one status, or every status when null. Nothing is fetched.
+     */
+    fun selectStatus(status: FeedbackStatus?) {
+        selectedStatus = status
+    }
+
+    /**
+     * Show only one category, or every category when null. Nothing is fetched.
+     */
+    fun selectCategory(category: FeedbackCategory?) {
+        selectedCategory = category
+    }
+
+    /**
+     * Remove the selected status and category. Keeps the sort and the search text.
+     */
+    fun clearSelectedFilters() {
+        selectedStatus = null
+        selectedCategory = null
+    }
 }
 
 /**
@@ -181,6 +295,7 @@ fun rememberFeedbackListState(
     loadOnCreate: Boolean = true
 ): FeedbackListState {
     val scope = androidx.compose.runtime.rememberCoroutineScope()
+    val context = LocalContext.current
 
     return androidx.compose.runtime.remember(scope) {
         FeedbackListState(
@@ -188,6 +303,7 @@ fun rememberFeedbackListState(
             initialStatusFilter = initialStatusFilter,
             initialCategoryFilter = initialCategoryFilter
         ).also {
+            it.sortStore = SharedPreferencesSortStore.from(context.applicationContext ?: context)
             if (loadOnCreate) {
                 it.load()
             }

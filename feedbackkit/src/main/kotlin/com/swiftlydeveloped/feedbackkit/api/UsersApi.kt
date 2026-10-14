@@ -1,5 +1,6 @@
 package com.swiftlydeveloped.feedbackkit.api
 
+import com.swiftlydeveloped.feedbackkit.errors.FeedbackKitError
 import com.swiftlydeveloped.feedbackkit.http.FeedbackKitHttpClient
 import com.swiftlydeveloped.feedbackkit.models.RegisterUserRequest
 import com.swiftlydeveloped.feedbackkit.models.SdkUser
@@ -18,7 +19,10 @@ class UsersApi internal constructor(
      * @return The registered user.
      */
     suspend fun register(request: RegisterUserRequest): SdkUser {
-        val body = http.jsonSerializer.encodeToString(request)
+        val resolvedUserId = request.userId?.takeIf { it.isNotBlank() }
+            ?: http.userId?.takeIf { it.isNotBlank() }
+            ?: throw FeedbackKitError.ValidationError("User ID is required to register a user")
+        val body = http.jsonSerializer.encodeToString(request.copy(userId = resolvedUserId))
 
         return http.post(
             endpoint = "users/register",
@@ -31,23 +35,33 @@ class UsersApi internal constructor(
     /**
      * Register a new SDK user with individual parameters.
      *
-     * @param email Optional email address.
-     * @param name Optional display name.
-     * @param externalId Optional external ID for linking to your user system.
-     * @param metadata Optional additional metadata.
+     * [userId] defaults to the id set on the client. [email], [name], [externalId]
+     * and [metadata] are ignored by `POST /users/register`.
+     *
+     * @param email Ignored by the server. Kept so existing call sites compile.
+     * @param name Ignored by the server. Kept so existing call sites compile.
+     * @param externalId Ignored by the server. Kept so existing call sites compile.
+     * @param metadata Ignored by the server. Kept so existing call sites compile.
+     * @param userId SDK user identifier. Sent as `user_id`.
+     * @param mrr Optional monthly recurring revenue.
      * @return The registered user.
      */
+    @Suppress("DEPRECATION")
     suspend fun register(
         email: String? = null,
         name: String? = null,
         externalId: String? = null,
-        metadata: Map<String, String>? = null
+        metadata: Map<String, String>? = null,
+        userId: String? = null,
+        mrr: Double? = null
     ): SdkUser = register(
         RegisterUserRequest(
             email = email,
             name = name,
             externalId = externalId,
-            metadata = metadata
+            metadata = metadata,
+            userId = userId,
+            mrr = mrr
         )
     )
 

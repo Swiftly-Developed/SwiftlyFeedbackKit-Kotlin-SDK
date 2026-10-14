@@ -39,4 +39,55 @@
     <string name="feedbackkit_category_other">Otro</string>
     <string name="feedbackkit_error_title">Error</string>
     <string name="feedbackkit_error_generic">Ocurrió un error</string>
+    <string name="feedbackkit_error_auth">Error de autenticación. Comprueba tu clave de API.</string>
+    <string name="feedbackkit_error_payment">Esta función requiere una mejora de la suscripción.</string>
+    <string name="feedbackkit_error_forbidden">No tienes permiso para realizar esta acción.</string>
+    <string name="feedbackkit_error_not_found">No se encontró el elemento solicitado.</string>
+    <string name="feedbackkit_error_timeout">Se agotó el tiempo de la solicitud. Inténtalo de nuevo.</string>
+    <string name="feedbackkit_error_network">Error de red. Comprueba tu conexión.</string>
+    <string name="feedbackkit_error_server">Error del servidor. Inténtalo de nuevo más tarde.</string>
+    <string name="feedbackkit_error_rate_limit">Demasiadas solicitudes. Inténtalo de nuevo en un momento.</string>
+    <string name="feedbackkit_error_unexpected">Se produjo un error inesperado.</string>
+
+    <!-- Showcase list, sort and filter (FEEDBACK01) -->
+    <string name="feedbackkit_sort_and_filter">Ordenar y filtrar</string>
+    <string name="feedbackkit_sort_by">Ordenar por</string>
+    <string name="feedbackkit_sort_votes">Votos</string>
+    <string name="feedbackkit_sort_newest">Más recientes</string>
+    <string name="feedbackkit_sort_oldest">Más antiguos</string>
+    <string name="feedbackkit_sort_comments">Comentarios</string>
+    <string name="feedbackkit_filter_status">Estado</string>
+    <string name="feedbackkit_filter_category">Categoría</string>
+    <string name="feedbackkit_filter_all_statuses">Todos los estados</string>
+    <string name="feedbackkit_filter_all_categories">Todas las categorías</string>
+    <string name="feedbackkit_filter_clear_all">Borrar filtros</string>
+    <string name="feedbackkit_category_plural_feature_request">Solicitudes de función</string>
+    <string name="feedbackkit_category_plural_bug_report">Reportes de error</string>
+    <string name="feedbackkit_category_plural_improvement">Mejoras</string>
+    <string name="feedbackkit_category_plural_other">Otros</string>
+    <string name="feedbackkit_filtered_by">Filtrado por %1$s</string>
+    <string name="feedbackkit_filter_names_join">%1$s ·\u00A0%2$s</string>
+    <string name="feedbackkit_filter_names_join_spoken">%1$s, %2$s</string>
+    <string name="feedbackkit_filter_clear">Borrar</string>
+    <string name="feedbackkit_filtered_empty">No hay solicitudes que coincidan</string>
+    <string name="feedbackkit_filtered_empty_description">Ningún comentario coincide con estos filtros.</string>
+    <string name="feedbackkit_search_placeholder">Buscar comentarios</string>
+    <string name="feedbackkit_search_clear">Borrar búsqueda</string>
+    <string name="feedbackkit_search_empty">Sin resultados</string>
+    <string name="feedbackkit_search_empty_description">Ningún comentario coincide con tu búsqueda.</string>
+    <string name="feedbackkit_vote_state_voted">Votado</string>
+    <string name="feedbackkit_vote_state_not_voted">No votado</string>
+    <string name="feedbackkit_vote_closed">La votación está cerrada</string>
+    <string name="feedbackkit_view_details">Ver detalles</string>
+    <string name="feedbackkit_list_loading">Cargando comentarios</string>
+    <string name="feedbackkit_sorted_by">Ordenado por %1$s</string>
+    <string name="feedbackkit_list_refreshing">Actualizando comentarios</string>
+    <plurals name="feedbackkit_vote_count">
+        <item quantity="one">%1$s voto</item>
+        <item quantity="other">%1$s votos</item>
+    </plurals>
+    <plurals name="feedbackkit_comment_count">
+        <item quantity="one">%1$s comentario</item>
+        <item quantity="other">%1$s comentarios</item>
+    </plurals>
 </resources>

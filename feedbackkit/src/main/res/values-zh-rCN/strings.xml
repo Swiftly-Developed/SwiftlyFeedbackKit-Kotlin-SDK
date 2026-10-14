@@ -39,4 +39,53 @@
     <string name="feedbackkit_category_other">其他</string>
     <string name="feedbackkit_error_title">错误</string>
     <string name="feedbackkit_error_generic">发生了错误</string>
+    <string name="feedbackkit_error_auth">身份验证失败。请检查 API 密钥。</string>
+    <string name="feedbackkit_error_payment">此功能需要升级订阅。</string>
+    <string name="feedbackkit_error_forbidden">你没有执行此操作的权限。</string>
+    <string name="feedbackkit_error_not_found">未找到所请求的内容。</string>
+    <string name="feedbackkit_error_timeout">请求超时。请重试。</string>
+    <string name="feedbackkit_error_network">网络错误。请检查网络连接。</string>
+    <string name="feedbackkit_error_server">服务器错误。请稍后重试。</string>
+    <string name="feedbackkit_error_rate_limit">请求过于频繁。请稍后再试。</string>
+    <string name="feedbackkit_error_unexpected">发生了意外错误。</string>
+
+    <!-- Showcase list, sort and filter (FEEDBACK01) -->
+    <string name="feedbackkit_sort_and_filter">排序与筛选</string>
+    <string name="feedbackkit_sort_by">排序方式</string>
+    <string name="feedbackkit_sort_votes">投票数</string>
+    <string name="feedbackkit_sort_newest">最新</string>
+    <string name="feedbackkit_sort_oldest">最早</string>
+    <string name="feedbackkit_sort_comments">评论最多</string>
+    <string name="feedbackkit_filter_status">状态</string>
+    <string name="feedbackkit_filter_category">分类</string>
+    <string name="feedbackkit_filter_all_statuses">全部状态</string>
+    <string name="feedbackkit_filter_all_categories">全部分类</string>
+    <string name="feedbackkit_filter_clear_all">清除筛选</string>
+    <string name="feedbackkit_category_plural_feature_request">功能请求</string>
+    <string name="feedbackkit_category_plural_bug_report">错误报告</string>
+    <string name="feedbackkit_category_plural_improvement">改进</string>
+    <string name="feedbackkit_category_plural_other">其他</string>
+    <string name="feedbackkit_filtered_by">筛选条件：%1$s</string>
+    <string name="feedbackkit_filter_names_join">%1$s ·\u00A0%2$s</string>
+    <string name="feedbackkit_filter_names_join_spoken">%1$s，%2$s</string>
+    <string name="feedbackkit_filter_clear">清除</string>
+    <string name="feedbackkit_filtered_empty">没有匹配的请求</string>
+    <string name="feedbackkit_filtered_empty_description">没有与这些筛选条件匹配的反馈。</string>
+    <string name="feedbackkit_search_placeholder">搜索反馈</string>
+    <string name="feedbackkit_search_clear">清除搜索</string>
+    <string name="feedbackkit_search_empty">无结果</string>
+    <string name="feedbackkit_search_empty_description">没有与你的搜索匹配的反馈。</string>
+    <string name="feedbackkit_vote_state_voted">已投票</string>
+    <string name="feedbackkit_vote_state_not_voted">未投票</string>
+    <string name="feedbackkit_vote_closed">投票已关闭</string>
+    <string name="feedbackkit_view_details">查看详情</string>
+    <string name="feedbackkit_list_loading">正在加载反馈</string>
+    <string name="feedbackkit_sorted_by">排序方式：%1$s</string>
+    <string name="feedbackkit_list_refreshing">正在刷新反馈</string>
+    <plurals name="feedbackkit_vote_count">
+        <item quantity="other">%1$s票</item>
+    </plurals>
+    <plurals name="feedbackkit_comment_count">
+        <item quantity="other">%1$s条评论</item>
+    </plurals>
 </resources>
