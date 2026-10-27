@@ -40,13 +40,24 @@ android {
         compose = true
     }
 
+    // Maven Central requires -sources.jar and -javadoc.jar next to the AAR.
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.8"
     }
 
     testOptions {
         unitTests {
-            // Robolectric needs merged resources for the Compose UI and screenshot tests.
+            // Robolectric reads the variant's merged resources, including the
+            // unit-test manifest. Release tests need this for the same reason
+            // debug tests do: Compose rules and screenshots resolve resources
+            // from that APK, not from the classpath alone.
             isIncludeAndroidResources = true
             all {
                 it.systemProperty("robolectric.graphicsMode", "NATIVE")
@@ -104,7 +115,16 @@ dependencies {
 
     // Debug
     debugImplementation("androidx.compose.ui:ui-tooling")
+    // Declares ComponentActivity with MAIN/LAUNCHER. debugImplementation merges
+    // it into the debug variant only, which is what testDebugUnitTest launches.
+    // It must not be releaseImplementation: that activity would ship in the AAR.
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    // testReleaseUnitTest builds its manifest from the release variant plus test
+    // dependencies. Without this, createComposeRule fails with
+    // "Unable to resolve activity ... ComponentActivity" while debug passes.
+    // Release minification stays off; the failure is the missing activity, not R8.
+    testReleaseImplementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    testReleaseImplementation("androidx.compose.ui:ui-test-manifest")
 }
 
 // Publishing configuration

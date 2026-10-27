@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [2.2.0] - 2026-10-27
+
+All FeedbackKit SDKs (Swift, JS, React Native, Kotlin, Flutter) now share one version number. The Vapor SDK keeps its own versioning.
+
+### Changed
+
+- **The Maven publication now includes `-sources.jar` and `-javadoc.jar`**, which Maven Central requires, via `singleVariant("release") { withSourcesJar(); withJavadocJar() }`.
+- The contact addresses in the repository docs are now getfeedbackkit.com aliases: security@ in `SECURITY.md`, support@ in `SUPPORT.md`, hello@ in `CODE_OF_CONDUCT.md` and developers@ in `CONTRIBUTING.md`.
+- The README licence section now reads MIT, matching `LICENSE`.
+- The developer email in the published Maven POM (`POM_DEVELOPER_EMAIL`) is now developers@getfeedbackkit.com.
+
 ## [2.1.0] - 2026-10-14
 
 The Showcase feedback list from [FEEDBACK01](../docs/specs/FEEDBACK01.md), translated to Material 3. The version follows the Swift SDK release that ships the same design. Every API change is additive, but the default look of `FeedbackList` changes.

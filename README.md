@@ -1,8 +1,8 @@
 # SwiftlyFeedbackKit-Kotlin
 
-> **Install `com.getfeedbackkit:feedbackkit:1.0.1` from Maven Central** (published 9 February 2026). The Kotlin package inside that artifact is `com.swiftlydeveloped.feedbackkit`. This checkout is **2.1.0**: git tag `2.1.0` on the public mirror, not on Maven Central. Detail and submit composables match 1.0.1. The Showcase list (`FeedbackListScreen`, search, sort and filter, and `listStyle`) is 2.1.0 only. Anonymous user ids, `votes.vote(email, notifyStatusChange)`, `users.register(userId, mrr)`, and `FeedbackKit.shared.metrics` are 2.1.0 only. 1.0.1's `vote` has `notifyOnStatusChange` only, and that build wrote a JSON key the server does not read. Step-by-step samples: [docs/getting-started.md](docs/getting-started.md).
+> **Install `com.getfeedbackkit:feedbackkit:1.0.1` from Maven Central** (published 9 February 2026). The Kotlin package inside that artifact is `com.swiftlydeveloped.feedbackkit`. This checkout is **2.2.0**: git tag `2.2.0` on the public mirror, not on Maven Central. Detail and submit composables match 1.0.1. The Showcase list (`FeedbackListScreen`, search, sort and filter, and `listStyle`) is 2.1.0 only. Anonymous user ids, `votes.vote(email, notifyStatusChange)`, `users.register(userId, mrr)`, and `FeedbackKit.shared.metrics` are 2.1.0 only. 1.0.1's `vote` has `notifyOnStatusChange` only, and that build wrote a JSON key the server does not read. Step-by-step samples: [docs/getting-started.md](docs/getting-started.md).
 >
-> The public mirror [SwiftlyFeedbackKit-Kotlin-SDK](https://github.com/Swiftly-Developed/SwiftlyFeedbackKit-Kotlin-SDK) has tags `1.1.0`, `1.1.1`, `1.2.0` and `2.1.0`. `1.2.0` and `2.1.0` were tagged 14 October 2026. Its `main` is this tree. Tag `1.2.0` is 1.1.1 plus fixes (the `R` import compile fix, nullable `Comment.feedbackId`, the `is_admin` and `user_email` keys, the committed Gradle wrapper jar). It has no metrics API, no anonymous id and no Showcase list. Its README shows `com.swiftlydeveloped:feedbackkit:1.2.0`, which was never the Maven group and is not on Maven Central. No tag is on Maven Central. To use `1.2.0` or `2.1.0`, check out the tag and depend on its `:feedbackkit` module.
+> The public mirror [SwiftlyFeedbackKit-Kotlin-SDK](https://github.com/Swiftly-Developed/SwiftlyFeedbackKit-Kotlin-SDK) has tags `1.1.0`, `1.1.1`, `1.2.0`, `2.1.0` and `2.2.0`. `1.2.0` and `2.1.0` were tagged 14 October 2026, `2.2.0` on 27 October 2026. Its `main` is this tree. Tag `1.2.0` is 1.1.1 plus fixes (the `R` import compile fix, nullable `Comment.feedbackId`, the `is_admin` and `user_email` keys, the committed Gradle wrapper jar). It has no metrics API, no anonymous id and no Showcase list. Its README shows `com.swiftlydeveloped:feedbackkit:1.2.0`, which was never the Maven group and is not on Maven Central. No tag is on Maven Central. To use `1.2.0` or `2.1.0`, check out the tag and depend on its `:feedbackkit` module.
 >
 > There is no pull-to-refresh gesture. `FeedbackListState.refresh()` sets `isRefreshing`, and the list draws a progress indicator while that flag is true.
 
@@ -10,7 +10,7 @@ Android SDK for the Swiftly Feedback platform. Built with Kotlin, Coroutines, an
 
 ## Installation
 
-The library is published on Maven Central as `com.getfeedbackkit:feedbackkit`. **1.0.1** is the latest published version. `1.1.x`, `1.2.0` and `2.1.0` are git tags on the public mirror only. They are not on Maven Central.
+The library is published on Maven Central as `com.getfeedbackkit:feedbackkit`. **1.0.1** is the latest published version. `1.1.x`, `1.2.0`, `2.1.0` and `2.2.0` are git tags on the public mirror only. They are not on Maven Central.
 
 Declare Maven Central, then add the dependency in your app module's `build.gradle.kts`:
 
@@ -551,4 +551,4 @@ An archived project still lists. Create, vote, and comment come back as `Forbidd
 
 ## License
 
-Copyright 2024 Swiftly Developed. All rights reserved.
+MIT License - see [LICENSE](LICENSE) for details.
